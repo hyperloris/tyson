@@ -28,8 +28,8 @@ export class Tyson {
   }
 
   public fromJson<T>(json: {}, classOfT: {new(): T; }): T;
-  public fromJson<T>(json: any[], classOfT: {new(): T; }): T[];
-  public fromJson<T>(json: any, classOfT: {new(): T; }): any {
+  public fromJson<T>(json: any[], classOfT: {new(): T; }[]): T[];
+  public fromJson<T>(json: any, classOfT: any): any {
     if (json === undefined || classOfT === undefined) {
       return undefined;
     }

@@ -188,6 +188,105 @@ describe("Testing fromJson vs", () => {
     expect(city.getMayors()[2].toString()).toBe("id=23, name=Sergio Cofferati");
   });
 
+  it("Array of objects with children and other arrays", () => {
+    const json = [
+      {
+        name: "Bologna",
+        population: 388884,
+        fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
+        monuments: [
+          { name: "Basilica di San Petronio", completed: 1663 },
+          { name: "Università di Bologna", completed: 1088 },
+          { name: "Fontana del Nettuno", completed: 1566 }
+        ],
+        mayor: {
+          name: "Virginio Merola",
+          age: 63
+        }
+      },
+      {
+        name: "Milano",
+        population: 1365156,
+        fractions: ["Arese", "Assago", "Baranzate"],
+        monuments: [
+          { name: "Duomo di Milano", completed: 1932 },
+          { name: "Galleria Vittorio Emanuele II", completed: 1877 }
+        ],
+        mayor: {
+          name: "Giuseppe Sala",
+          age: 60
+        }
+      },
+      {
+        name: "Roma",
+        population: 2874605,
+        fractions: ["Albano Laziale", "Anguillara Sabazia", "Ardea"],
+        monuments: [],
+        mayor: {
+          name: "Virginia Raggi",
+          age: 40
+        }
+      }
+    ];
+
+    class Monument {
+      private name: string = undefined;
+      @JsonProperty("completed")
+      private _completed: number = undefined;
+
+      public toString(): string {
+        return `name=${this.name}, completed=${this._completed}`;
+      }
+    }
+
+    class User {
+      @JsonProperty("name")
+      private _name: string = undefined;
+      @JsonProperty("age")
+      private _age: number = undefined;
+
+      public toString(): string {
+        return `name=${this._name}, age=${this._age}`;
+      }
+    }
+
+    class City {
+      @JsonProperty("name")
+      private _name: string = undefined;
+      @JsonProperty("population")
+      private _population: number = undefined;
+      @JsonProperty({ name: "fractions", type: [String] })
+      private _fractions: string[] = undefined;
+      @JsonProperty({ name: "monuments", type: [Monument] })
+      private _monuments: Monument[] = undefined;
+      @JsonProperty({ name: "mayor", type: User })
+      private _mayor: User = undefined;
+
+      get fractions(): string[] {
+        return this._fractions;
+      }
+
+      get monuments(): Monument[] {
+        return this._monuments;
+      }
+
+      get mayor(): User {
+        return this._mayor;
+      }
+    }
+
+    const cities = new Tyson().fromJson(json, [City]);
+    expect(cities).toHaveLength(3);
+    expect(cities[1].fractions).toHaveLength(3);
+    expect(cities[1].fractions[2]).toBe("Baranzate");
+    expect(cities[2].mayor.toString()).toBe("name=Virginia Raggi, age=40");
+    expect(cities[0].monuments).toHaveLength(3);
+    expect(cities[1].monuments).toHaveLength(2);
+    expect(cities[2].monuments).toHaveLength(0);
+    expect(cities[0].monuments[0].toString()).toBe("name=Basilica di San Petronio, completed=1663");
+    expect(cities[1].monuments[1].toString()).toBe("name=Galleria Vittorio Emanuele II, completed=1877");
+  });
+
   it("Tyson instance with 1 custom TypeAdapter registered", () => {
     const json = {
       "_name": "Bologna",

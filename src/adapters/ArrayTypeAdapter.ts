@@ -1,9 +1,9 @@
 import { Constants } from "../Constants";
+import { ReflectionUtils } from "../reflect/ReflectionUtils";
 import { TypeAdapter } from "../TypeAdapter";
 import { TypeAdapterFactory } from "./../TypeAdapterFactory";
 import { TypeToken } from "../reflect/TypeToken";
 import { Tyson } from "../Tyson";
-import { ReflectionUtils } from "../reflect/ReflectionUtils";
 
 export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
   static readonly FACTORY: TypeAdapterFactory = {
@@ -12,18 +12,19 @@ export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
         // Nasted arrays are not supported right now
         if (typeToken.type.length === 1) {
           const nestedTypeToken = new TypeToken(typeToken.type[0]);
-          const typeAdapter = tyson.getAdapter(nestedTypeToken);
-          return new ArrayTypeAdapter(typeAdapter);
+          return new ArrayTypeAdapter(tyson, nestedTypeToken);
         }
       }
       return undefined;
     }
   };
 
-  private _typeAdapter: TypeAdapter<any>;
+  private _tyson: Tyson;
+  private _typeToken: TypeToken<any>;
 
-  constructor(typeAdapter: TypeAdapter<any>) {
-    this._typeAdapter = typeAdapter;
+  constructor(tyson: Tyson, typeToken: TypeToken<any>) {
+    this._tyson = tyson;
+    this._typeToken = typeToken;
   }
 
   write(): void {
@@ -33,7 +34,7 @@ export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
   read(json: any): E[] {
     const array = new Array<E>();
     for (let e of json) {
-      array.push(this._typeAdapter.read(e));
+      array.push(this._tyson.getAdapter(this._typeToken).read(e));
     }
     return array;
   }

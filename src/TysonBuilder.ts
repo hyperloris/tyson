@@ -16,7 +16,7 @@ export class TysonBuilder {
   }
 
   public registerTypeAdapter<T>(type: {new(): T; }, typeAdapter: TypeAdapter<T>): TysonBuilder {
-    this._factories.push(TypeAdapters.newFactory(TypeToken.get(type), typeAdapter));
+    this._factories.push(TypeAdapters.newFactory(new TypeToken(type), typeAdapter));
     return this;
   }
 

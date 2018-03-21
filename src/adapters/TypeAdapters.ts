@@ -42,13 +42,13 @@ export class TypeAdapters {
     if (type instanceof TypeToken) {
       factory = {
         create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-          return type.equalsByType(typeToken) ? typeAdapter as any as TypeAdapter<T> : undefined;
+          return type.hash === typeToken.hash ? (typeAdapter as any) as TypeAdapter<T> : undefined;
         }
       };
     } else {
       factory = {
         create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-          return typeToken.name === type.name ? typeAdapter as any as TypeAdapter<T> : undefined;
+          return typeToken.equalsByType(type) ? (typeAdapter as any) as TypeAdapter<T> : undefined;
         }
       };
     }

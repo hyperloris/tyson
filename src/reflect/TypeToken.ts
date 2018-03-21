@@ -9,11 +9,7 @@ export class TypeToken<T> {
   constructor(type: {new(): T; } | {new(): T; }[], name?: string) {
     this._type = type;
     this._name = name || this.generateName();
-    this._hash = this.generateHash();
-  }
-
-  public static get<T>(type: {new(): T; }): TypeToken<T> {
-    return new TypeToken(type, ReflectionUtils.getTypeName(type));
+    this._hash = ReflectionUtils.getTypeName(this._type) + this._name;
   }
 
   public get type(): {new(): T; } | {new(): T; }[] {
@@ -28,19 +24,21 @@ export class TypeToken<T> {
     return this._hash;
   }
 
-  public equalsByType(other: TypeToken<any>): boolean {
-    return ReflectionUtils.getTypeName(this._type) === ReflectionUtils.getTypeName(other.type);
+  public equalsByType<TT>(other: { new (): TT }): boolean {
+    return (
+      ReflectionUtils.getTypeName(this._type) ===
+      ReflectionUtils.getTypeName(other)
+    );
   }
 
   private generateName(): string {
-    const typeName = ReflectionUtils.getTypeName(this._type);
-    return ReflectionUtils.isBasicType(typeName) ? typeName : Constants.OBJECT_TYPE;
-  }
-
-  private generateHash(): string {
-    let hash = this._type instanceof Array ? Constants.ARRAY_TYPE : "";
-    hash += ReflectionUtils.getTypeName(this._type);
-    hash += this._name;
-    return hash;
+    if (this._type instanceof Array) {
+      return ReflectionUtils.getTypeName(this._type[0]);
+    } else {
+      const typeName = ReflectionUtils.getTypeName(this._type);
+      return ReflectionUtils.isBasicType(typeName)
+        ? typeName
+        : Constants.OBJECT_TYPE;
+    }
   }
 }

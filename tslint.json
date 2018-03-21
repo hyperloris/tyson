@@ -2,5 +2,26 @@
   "extends": [
     "tslint-config-standard",
     "tslint-config-prettier"
-  ]
+  ],
+  "rules": {
+    "max-len": [
+      "error",
+      {
+        "code": 100,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true
+      }
+    ],
+    "quotemark": [
+      true,
+      "double",
+      "avoid-escape",
+      "jsx-single"
+    ],
+    "semicolon": [
+      true,
+      "always"
+    ]
+  }
 }

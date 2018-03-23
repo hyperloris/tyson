@@ -13,12 +13,11 @@ describe("Tyson test", () => {
 });
 
 describe("Testing fromJson vs", () => {
-
   it("Simple object with no annotations", () => {
     const json = {
-      "name": "Bologna",
-      "population": 388884,
-      "beautiful": true
+      name: "Bologna",
+      population: 388884,
+      beautiful: true
     };
 
     class City {
@@ -35,9 +34,9 @@ describe("Testing fromJson vs", () => {
 
   it("Simple object with functions and no annotations", () => {
     const json = {
-      "name": "Bologna",
-      "population": 388884,
-      "beautiful": true
+      name: "Bologna",
+      population: 388884,
+      beautiful: true
     };
 
     class City {
@@ -61,10 +60,10 @@ describe("Testing fromJson vs", () => {
 
   it("Simple object with functions and JsonProperty annotations", () => {
     const json = {
-      "_name": "Bologna",
-      "ppltn": 388884,
-      "awesome": true,
-      "website": "http://bologna.it",
+      _name: "Bologna",
+      ppltn: 388884,
+      awesome: true,
+      website: "http://bologna.it"
     };
 
     class City {
@@ -97,11 +96,11 @@ describe("Testing fromJson vs", () => {
 
   it("Object with functions, JsonProperty annotations and 1 child", () => {
     const json = {
-      "_name": "Bologna",
-      "fractions": ["Barbiano", "Bertalìa", "Borgo Panigale"],
-      "mayor": {
-        "ID": 35,
-        "name": "Virginio Merola"
+      _name: "Bologna",
+      fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
+      mayor: {
+        ID: 35,
+        name: "Virginio Merola"
       }
     };
 
@@ -145,17 +144,21 @@ describe("Testing fromJson vs", () => {
 
   it("Object with functions, JsonProperty annotations and 1 array of children", () => {
     const json = {
-      "_name": "Bologna",
-      "mayors": [{
-        "ID": 35,
-        "name": "Virginio Merola"
-      }, {
-        "ID": 41,
-        "name": "Flavio Delbono"
-      }, {
-        "ID": 23,
-        "name": "Sergio Cofferati"
-      }]
+      _name: "Bologna",
+      mayors: [
+        {
+          ID: 35,
+          name: "Virginio Merola"
+        },
+        {
+          ID: 41,
+          name: "Flavio Delbono"
+        },
+        {
+          ID: 23,
+          name: "Sergio Cofferati"
+        }
+      ]
     };
 
     class User {
@@ -186,6 +189,58 @@ describe("Testing fromJson vs", () => {
     const city = new Tyson().fromJson(json, City);
     expect(city.getMayors()).toHaveLength(3);
     expect(city.getMayors()[2].toString()).toBe("id=23, name=Sergio Cofferati");
+  });
+
+  it("Object with primitive types that differ from the json", () => {
+    const json1 = {
+      name: true,
+      population: 388884,
+      beautiful: true
+    };
+
+    const json2 = {
+      name: "Bologna",
+      population: "388884",
+      beautiful: true
+    };
+
+    const json3 = {
+      name: "Bologna",
+      population: 388884,
+      beautiful: 42
+    };
+
+    class City {
+      @JsonProperty()
+      private name: string = undefined;
+      @JsonProperty()
+      private population: number = undefined;
+      @JsonProperty()
+      private beautiful: boolean = undefined;
+    }
+
+    const tyson = new Tyson();
+    try {
+      tyson.fromJson(json1, City);
+    } catch (err) {
+      expect(err.message).toEqual(
+        "Property 'name' of City does not match type of 'name'"
+      );
+    }
+    try {
+      tyson.fromJson(json2, City);
+    } catch (err) {
+      expect(err.message).toEqual(
+        "Property 'population' of City does not match type of 'population'"
+      );
+    }
+    try {
+      tyson.fromJson(json3, City);
+    } catch (err) {
+      expect(err.message).toEqual(
+        "Property 'beautiful' of City does not match type of 'beautiful'"
+      );
+    }
   });
 
   it("Array of objects with children and other arrays", () => {
@@ -283,14 +338,18 @@ describe("Testing fromJson vs", () => {
     expect(cities[0].monuments).toHaveLength(3);
     expect(cities[1].monuments).toHaveLength(2);
     expect(cities[2].monuments).toHaveLength(0);
-    expect(cities[0].monuments[0].toString()).toBe("name=Basilica di San Petronio, completed=1663");
-    expect(cities[1].monuments[1].toString()).toBe("name=Galleria Vittorio Emanuele II, completed=1877");
+    expect(cities[0].monuments[0].toString()).toBe(
+      "name=Basilica di San Petronio, completed=1663"
+    );
+    expect(cities[1].monuments[1].toString()).toBe(
+      "name=Galleria Vittorio Emanuele II, completed=1877"
+    );
   });
 
   it("Tyson instance with 1 custom TypeAdapter registered", () => {
     const json = {
-      "_name": "Bologna",
-      "coords": [44.498955, 11.327591]
+      _name: "Bologna",
+      coords: [44.498955, 11.327591]
     };
 
     class Point {
@@ -319,13 +378,17 @@ describe("Testing fromJson vs", () => {
     }
 
     const pointAdapter: TypeAdapter<Point> = {
-      write(): void { /* Empty */ },
+      write(): void {
+        /* Empty */
+      },
       read(json: any): Point {
         return new Point(json[0], json[1]);
       }
     };
 
-    const tyson = new TysonBuilder().registerTypeAdapter(Point, pointAdapter).build();
+    const tyson = new TysonBuilder()
+      .registerTypeAdapter(Point, pointAdapter)
+      .build();
     const city = tyson.fromJson(json, City);
     expect(city.getPoint().toString()).toBe("lat=44.498955, lon=11.327591");
   });

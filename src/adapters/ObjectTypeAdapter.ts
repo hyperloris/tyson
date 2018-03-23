@@ -1,4 +1,5 @@
 import { Constants } from "../Constants";
+import { DeserializationError } from "./../exceptions/DeserializationError";
 import { PropertyMetadata } from "./../reflect/PropertyMetadata";
 import { ReflectionUtils } from "../reflect/ReflectionUtils";
 import { TypeAdapter } from "../TypeAdapter";
@@ -32,7 +33,7 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
   }
 
   public read(json: any): any {
-    const obj = new (this._typeToken.type as {new(): any; })();
+    const obj = new (this._typeToken.type as { new(): any; })();
     for (let entry of Array.from(this._objectMap.entries())) {
       const objKey = entry[0];
       const metadata = entry[1];
@@ -41,17 +42,29 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
       if (metadata === undefined) {
         obj[objKey] = json[objKey];
       } else {
-        const propertyName = metadata.name || objKey;
-        const innerJson = json[propertyName];
+        const jsonKey = metadata.name || objKey;
+        const innerJson = json[jsonKey];
         const typeToken = new TypeToken(metadata.type);
-        obj[objKey] = this._tyson.getAdapter(typeToken).read(innerJson);
+
+        try {
+          obj[objKey] = this._tyson.getAdapter(typeToken).read(innerJson);
+        } catch (err) {
+          if (err instanceof DeserializationError) {
+            throw new DeserializationError(
+              `Property '${objKey}' of ${obj.constructor.name} does not match type of '${jsonKey}'.`,
+              json
+            );
+          } else {
+            throw err;
+          }
+        }
       }
     }
     return obj;
   }
 
   private reflect(): void {
-    const obj = new (this._typeToken.type as {new(): any; })();
+    const obj = new (this._typeToken.type as { new(): any; })();
     for (let key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getMetadata(obj, key);
 

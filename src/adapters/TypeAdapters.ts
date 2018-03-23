@@ -1,4 +1,5 @@
 import { Constants } from "../Constants";
+import { DeserializationError } from "./../exceptions/DeserializationError";
 import { TypeAdapter } from "../TypeAdapter";
 import { TypeAdapterFactory } from "../TypeAdapterFactory";
 import { TypeToken } from "../reflect/TypeToken";
@@ -11,6 +12,11 @@ export class TypeAdapters {
       throw new Error("Method not implemented.");
     },
     read(json: any): boolean {
+      if (typeof json !== Constants.BOOLEAN_TYPE_LOWERCASE) {
+        throw new DeserializationError(
+          `Value '${json}' does not match the expected type: boolean.`
+        );
+      }
       return json;
     }
   };
@@ -20,6 +26,11 @@ export class TypeAdapters {
       throw new Error("Method not implemented.");
     },
     read(json: any): number {
+      if (typeof json !== Constants.NUMBER_TYPE_LOWERCASE) {
+        throw new DeserializationError(
+          `Value '${json}' does not match the expected type: number.`
+        );
+      }
       return json;
     }
   };
@@ -29,6 +40,11 @@ export class TypeAdapters {
       throw new Error("Method not implemented.");
     },
     read(json: any): string {
+      if (typeof json !== Constants.STRING_TYPE_LOWERCASE) {
+        throw new DeserializationError(
+          `Value '${json}' does not match the expected type: string.`
+        );
+      }
       return json;
     }
   };

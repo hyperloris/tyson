@@ -392,6 +392,73 @@ describe("Testing fromJson vs", () => {
     const city = tyson.fromJson(json, City);
     expect(city.getPoint().toString()).toBe("lat=44.498955, lon=11.327591");
   });
+
+  it("A large and complex dataset", () => {
+    const json = {};
+    for (let c of ["a", "b", "c", "d"]) {
+      json[c] = [];
+      for (let i = 0; i < 1000; i++) {
+        json[c].push(
+          {
+            str: c + i,
+            num: i,
+            bol: i % 2 === 0,
+            obj: { p1: "poiuyt" },
+            astr: ["qwerty", "asdfgh", "zxcvbn"],
+            anum: [2, 3, 5, 7, 11, 13, 17, 19],
+            abol: [true, false, false, true],
+            aobj: [
+              { p1: "lkjhgf" },
+              { p1: "mnbvcx" }
+            ]
+          }
+        );
+      }
+    }
+
+    class Child {
+      @JsonProperty("p1")
+      p111: string = undefined;
+    }
+
+    class Base {
+      str: string = undefined;
+      @JsonProperty()
+      num: number = undefined;
+      @JsonProperty("bol")
+      bolll: boolean = undefined;
+      @JsonProperty("obj")
+      objjj: Child = undefined;
+      @JsonProperty({ type: [String] })
+      astr: string[] = undefined;
+      @JsonProperty({ type: [Number] })
+      anum: number[] = undefined;
+      @JsonProperty({ type: [Boolean] })
+      abol: boolean[] = undefined;
+      @JsonProperty({ name: "aobj", type: [Child] })
+      aobjjj: Child[] = undefined;
+    }
+
+    class Root {
+      a: Base[] = undefined;
+      @JsonProperty({ type: [Base] })
+      b: Base[] = undefined;
+      @JsonProperty({ name: "c", type: [Base] })
+      cC: Base[] = undefined;
+    }
+
+    const tyson = new Tyson();
+    const root = tyson.fromJson(json, Root);
+
+    expect(root.a).toHaveLength(1000);
+    expect(root.b).toHaveLength(1000);
+    expect(root.cC).toHaveLength(1000);
+    expect(root.a[150].str).toBe("a150");
+    expect(root.b[500].bolll).toBe(true);
+    expect(root.b[999].objjj.p111).toBe("poiuyt");
+    expect(root.cC[42].astr[2]).toBe("zxcvbn");
+    expect(root.cC[99].aobjjj[0].p111).toBe("lkjhgf");
+  });
 });
 
 describe("Testing toJson vs", () => {

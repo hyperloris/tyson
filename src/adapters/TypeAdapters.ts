@@ -8,8 +8,8 @@ import { Tyson } from "../Tyson";
 export class TypeAdapters {
 
   static readonly BOOLEAN: TypeAdapter<boolean> = {
-    write(): void {
-      throw new Error("Method not implemented.");
+    write(src: boolean): any {
+      return src;
     },
     read(json: any): boolean {
       if (typeof json !== Constants.BOOLEAN_TYPE_LOWERCASE) {
@@ -22,8 +22,8 @@ export class TypeAdapters {
   };
 
   static readonly NUMBER: TypeAdapter<number> = {
-    write(): void {
-      throw new Error("Method not implemented.");
+    write(src: number): any {
+      return src;
     },
     read(json: any): number {
       if (typeof json !== Constants.NUMBER_TYPE_LOWERCASE) {
@@ -36,8 +36,8 @@ export class TypeAdapters {
   };
 
   static readonly STRING: TypeAdapter<string> = {
-    write(): void {
-      throw new Error("Method not implemented.");
+    write(src: string): any {
+      return src;
     },
     read(json: any): string {
       if (typeof json !== Constants.STRING_TYPE_LOWERCASE) {

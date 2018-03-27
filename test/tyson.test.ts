@@ -58,7 +58,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getDescription()).toBe("Bologna has 388884 inhabitants.");
   });
 
-  it("Simple object with functions and JsonProperty annotations", () => {
+  it("Simple object with functions and JsonProperty annotation", () => {
     const json = {
       _name: "Bologna",
       ppltn: 388884,
@@ -94,7 +94,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getDescription()).toBe("Bologna has 388884 inhabitants.");
   });
 
-  it("Object with functions, JsonProperty annotations and 1 child", () => {
+  it("Object with functions, JsonProperty annotation and 1 child", () => {
     const json = {
       _name: "Bologna",
       fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
@@ -142,7 +142,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getMayor().toString()).toBe("id=35, name=Virginio Merola");
   });
 
-  it("Object with functions, JsonProperty annotations and 1 array of children", () => {
+  it("Object with functions, JsonProperty annotation and 1 array of children", () => {
     const json = {
       _name: "Bologna",
       mayors: [
@@ -224,21 +224,21 @@ describe("Testing fromJson vs", () => {
       tyson.fromJson(json1, City);
     } catch (err) {
       expect(err.message).toEqual(
-        "Property 'name' of City does not match type of 'name'"
+        "Property 'name' of City does not match type of 'name'."
       );
     }
     try {
       tyson.fromJson(json2, City);
     } catch (err) {
       expect(err.message).toEqual(
-        "Property 'population' of City does not match type of 'population'"
+        "Property 'population' of City does not match type of 'population'."
       );
     }
     try {
       tyson.fromJson(json3, City);
     } catch (err) {
       expect(err.message).toEqual(
-        "Property 'beautiful' of City does not match type of 'beautiful'"
+        "Property 'beautiful' of City does not match type of 'beautiful'."
       );
     }
   });
@@ -395,5 +395,93 @@ describe("Testing fromJson vs", () => {
 });
 
 describe("Testing toJson vs", () => {
-  // TODO
+  it("Simple object with no annotations", () => {
+    class City {
+      private name: string;
+      private population: number;
+      private beautiful: boolean;
+
+      constructor(name: string, population: number, beautiful: boolean) {
+        this.name = name;
+        this.population = population;
+        this.beautiful = beautiful;
+      }
+    }
+
+    const city = new City("Bologna", 388884, true);
+    const json = new Tyson().toJson(city);
+    expect(json).toEqual({ name: "Bologna", population: 388884, beautiful: true });
+  });
+
+  it("Simple object with JsonProperty annotation", () => {
+    class City {
+      @JsonProperty()
+      private name: string;
+      @JsonProperty("people")
+      private population: number;
+      @JsonProperty("awesome")
+      private beautiful: boolean;
+
+      constructor(name: string, population: number, beautiful: boolean) {
+        this.name = name;
+        this.population = population;
+        this.beautiful = beautiful;
+      }
+    }
+
+    const city = new City("Bologna", 388884, true);
+    const json = new Tyson().toJson(city);
+    expect(json).toEqual({ name: "Bologna", people: 388884, awesome: true });
+  });
+
+  it("Object with children and arrays", () => {
+    class Park {
+      @JsonProperty("_name")
+      name: string = undefined;
+      @JsonProperty("stars")
+      rating: number = undefined;
+    }
+
+    class City {
+      @JsonProperty("_name")
+      name: string = undefined;
+      @JsonProperty()
+      population: number = undefined;
+      @JsonProperty()
+      beautiful: boolean = undefined;
+      @JsonProperty({ type: [String] })
+      fractions: string[] = undefined;
+      @JsonProperty({ type: [Park] })
+      parks: Park[] = undefined;
+    }
+
+    const park1 = new Park();
+    park1.name = "Giardini Lunetta Gamberini";
+    park1.rating = 4.1;
+
+    const park2 = new Park();
+    park2.name = "Giardini Margherita";
+    park2.rating = 4.5;
+
+    const city = new City();
+    city.name = "Bologna";
+    city.population = 388884;
+    city.beautiful = true;
+    city.fractions = ["Barbiano", "Bertalìa", "Borgo Panigale"];
+    city.parks = [park1, park2];
+
+    const tyson = new Tyson();
+    expect(tyson.toJson(city)).toEqual(
+      {
+        _name: "Bologna",
+        population: 388884,
+        beautiful: true,
+        fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
+        parks: [
+          { _name: "Giardini Lunetta Gamberini", stars: 4.1 },
+          { _name: "Giardini Margherita", stars: 4.5 }
+        ]
+      }
+    );
+  });
 });

@@ -28,8 +28,19 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
     this.reflect();
   }
 
-  public write(): void {
-    throw new Error("Method not implemented.");
+  public write(src: any): any {
+    const jsonObj: any = {};
+    for (let key in src) {
+      const metadata = this._objectMap.get(key);
+      if (metadata === undefined) {
+        jsonObj[key] = src[key];
+      } else {
+        const jsonKey = metadata.name || key;
+        const typeToken = new TypeToken(metadata.type);
+        jsonObj[jsonKey] = this._tyson.getAdapter(typeToken).write(src[key]);
+      }
+    }
+    return jsonObj;
   }
 
   public read(json: any): any {

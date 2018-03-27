@@ -41,7 +41,12 @@ export class Tyson {
   public toJson<T>(src: T): {};
   public toJson<T>(src: T[]): any[];
   public toJson<T>(src: any): any {
-    // TODO
+    if (src === undefined) {
+      return undefined;
+    }
+
+    const typeToken = new TypeToken(src.constructor);
+    return this.getAdapter(typeToken).write(src);
   }
 
   public getAdapter<T>(typeToken: TypeToken<T>): TypeAdapter<T> {

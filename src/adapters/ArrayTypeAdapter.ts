@@ -27,8 +27,12 @@ export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
     this._typeToken = typeToken;
   }
 
-  write(): void {
-    throw new Error("Method not implemented.");
+  write(src: any): any {
+    const jsonArray: any = [];
+    for (let e of src) {
+      jsonArray.push(this._tyson.getAdapter(this._typeToken).write(e));
+    }
+    return jsonArray;
   }
 
   read(json: any): E[] {

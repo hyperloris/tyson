@@ -23,6 +23,7 @@ export class Tyson {
     this._factories.push(TypeAdapters.BOOLEAN_FACTORY);
     this._factories.push(TypeAdapters.NUMBER_FACTORY);
     this._factories.push(TypeAdapters.STRING_FACTORY);
+    this._factories.push(TypeAdapters.DATE_FACTORY);
     this._factories.push(ObjectTypeAdapter.FACTORY);
     this._factories.push(ArrayTypeAdapter.FACTORY);
   }

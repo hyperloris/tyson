@@ -49,9 +49,19 @@ export class TypeAdapters {
     }
   };
 
+  static readonly DATE: TypeAdapter<Date> = {
+    write(src: Date): any {
+      return src.getTime();
+    },
+    read(json: any): Date {
+      return new Date(json);
+    }
+  };
+
   static BOOLEAN_FACTORY = TypeAdapters.newFactory(Boolean, TypeAdapters.BOOLEAN);
   static NUMBER_FACTORY = TypeAdapters.newFactory(Number, TypeAdapters.NUMBER);
   static STRING_FACTORY = TypeAdapters.newFactory(String, TypeAdapters.STRING);
+  static DATE_FACTORY = TypeAdapters.newFactory(Date, TypeAdapters.DATE);
 
   static newFactory<TT>(type: {new(): TT; } | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
     let factory: TypeAdapterFactory;

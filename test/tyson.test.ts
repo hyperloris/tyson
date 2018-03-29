@@ -403,6 +403,7 @@ describe("Testing fromJson vs", () => {
             str: c + i,
             num: i,
             bol: i % 2 === 0,
+            date: "03/29/2018",
             obj: { p1: "poiuyt" },
             astr: ["qwerty", "asdfgh", "zxcvbn"],
             anum: [2, 3, 5, 7, 11, 13, 17, 19],
@@ -427,6 +428,8 @@ describe("Testing fromJson vs", () => {
       num: number = undefined;
       @JsonProperty("bol")
       bolll: boolean = undefined;
+      @JsonProperty({ type: Date })
+      date: Date = undefined;
       @JsonProperty("obj")
       objjj: Child = undefined;
       @JsonProperty({ type: [String] })
@@ -455,6 +458,7 @@ describe("Testing fromJson vs", () => {
     expect(root.cC).toHaveLength(1000);
     expect(root.a[150].str).toBe("a150");
     expect(root.b[500].bolll).toBe(true);
+    expect(root.b[750].date.getTime()).toBe(new Date("03/29/2018").getTime());
     expect(root.b[999].objjj.p111).toBe("poiuyt");
     expect(root.cC[42].astr[2]).toBe("zxcvbn");
     expect(root.cC[99].aobjjj[0].p111).toBe("lkjhgf");
@@ -507,6 +511,8 @@ describe("Testing toJson vs", () => {
       name: string = undefined;
       @JsonProperty("stars")
       rating: number = undefined;
+      @JsonProperty({ type: Date })
+      lastCleanup: Date = undefined;
     }
 
     class City {
@@ -525,10 +531,12 @@ describe("Testing toJson vs", () => {
     const park1 = new Park();
     park1.name = "Giardini Lunetta Gamberini";
     park1.rating = 4.1;
+    park1.lastCleanup = new Date("01/01/2018");
 
     const park2 = new Park();
     park2.name = "Giardini Margherita";
     park2.rating = 4.5;
+    park2.lastCleanup = new Date("03/05/2018");
 
     const city = new City();
     city.name = "Bologna";
@@ -545,8 +553,16 @@ describe("Testing toJson vs", () => {
         beautiful: true,
         fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
         parks: [
-          { _name: "Giardini Lunetta Gamberini", stars: 4.1 },
-          { _name: "Giardini Margherita", stars: 4.5 }
+          {
+            _name: "Giardini Lunetta Gamberini",
+            stars: 4.1,
+            lastCleanup: new Date("01/01/2018").getTime()
+          },
+          {
+            _name: "Giardini Margherita",
+            stars: 4.5,
+            lastCleanup: new Date("03/05/2018").getTime()
+          }
         ]
       }
     );

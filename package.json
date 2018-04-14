@@ -1,8 +1,14 @@
 {
   "name": "tyson",
-  "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "version": "1.0.0",
+  "description": "A TypeScript serialization/deserialization library to convert objects to/from JSON.",
+  "keywords": [
+    "typescript",
+    "json",
+    "serialization",
+    "deserialization",
+    "angular"
+  ],
   "main": "dist/tyson.umd.js",
   "module": "dist/tyson.es5.js",
   "typings": "dist/types/tyson.d.ts",
@@ -12,7 +18,7 @@
   "author": "Lorenzo Gigli <lorenzo.dramis@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/hyperloris/tyson"
   },
   "license": "MIT",
   "engines": {
@@ -35,7 +41,7 @@
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
-      "prettier --write --no-semi --single-quote",
+      "prettier --write --print-width 100",
       "git add"
     ]
   },

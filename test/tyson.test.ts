@@ -3,9 +3,6 @@ import { TypeAdapter } from "./../src/TypeAdapter";
 import { Tyson } from "../src/Tyson";
 import { TysonBuilder } from "./../src/TysonBuilder";
 
-/**
- * Tyson test
- */
 describe("Tyson test", () => {
   it("Tyson is instantiable", () => {
     expect(new Tyson()).toBeInstanceOf(Tyson);
@@ -13,7 +10,7 @@ describe("Tyson test", () => {
 });
 
 describe("Testing fromJson vs", () => {
-  it("Simple object with no annotations", () => {
+  it("Simple class with no annotations", () => {
     const json = {
       name: "Bologna",
       population: 388884,
@@ -32,7 +29,7 @@ describe("Testing fromJson vs", () => {
     expect(city.beautiful).toBe(true);
   });
 
-  it("Simple object with functions and no annotations", () => {
+  it("Simple class with functions and no annotations", () => {
     const json = {
       name: "Bologna",
       population: 388884,
@@ -58,7 +55,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getDescription()).toBe("Bologna has 388884 inhabitants.");
   });
 
-  it("Simple object with functions and JsonProperty annotation", () => {
+  it("Simple class with functions and JsonProperty annotation", () => {
     const json = {
       _name: "Bologna",
       ppltn: 388884,
@@ -94,7 +91,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getDescription()).toBe("Bologna has 388884 inhabitants.");
   });
 
-  it("Object with functions, JsonProperty annotation and 1 child", () => {
+  it("Class with functions, JsonProperty annotation and 1 child", () => {
     const json = {
       _name: "Bologna",
       fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
@@ -142,7 +139,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getMayor().toString()).toBe("id=35, name=Virginio Merola");
   });
 
-  it("Object with functions, JsonProperty annotation and 1 array of children", () => {
+  it("Class with functions, JsonProperty annotation and 1 array of children", () => {
     const json = {
       _name: "Bologna",
       mayors: [
@@ -191,7 +188,7 @@ describe("Testing fromJson vs", () => {
     expect(city.getMayors()[2].toString()).toBe("id=23, name=Sergio Cofferati");
   });
 
-  it("Object with primitive types that differ from the json", () => {
+  it("Class with primitive types that differ from the json", () => {
     const json1 = {
       name: true,
       population: 388884,
@@ -353,16 +350,24 @@ describe("Testing fromJson vs", () => {
     };
 
     class Point {
-      private lat: number = undefined;
-      private lon: number = undefined;
+      private _lat: number = undefined;
+      private _lon: number = undefined;
 
       constructor(lat?: number, lon?: number) {
-        this.lat = lat;
-        this.lon = lon;
+        this._lat = lat;
+        this._lon = lon;
+      }
+
+      get lat(): number {
+        return this._lat;
+      }
+
+      get lon(): number {
+        return this._lon;
       }
 
       public toString(): string {
-        return `lat=${this.lat}, lon=${this.lon}`;
+        return `lat=${this._lat}, lon=${this._lon}`;
       }
     }
 
@@ -378,8 +383,8 @@ describe("Testing fromJson vs", () => {
     }
 
     const pointAdapter: TypeAdapter<Point> = {
-      write(): void {
-        /* Empty */
+      write(src: Point): any {
+        return [src.lat, src.lon];
       },
       read(json: any): Point {
         return new Point(json[0], json[1]);
@@ -466,7 +471,7 @@ describe("Testing fromJson vs", () => {
 });
 
 describe("Testing toJson vs", () => {
-  it("Simple object with no annotations", () => {
+  it("Simple class with no annotations", () => {
     class City {
       private name: string;
       private population: number;
@@ -484,7 +489,7 @@ describe("Testing toJson vs", () => {
     expect(json).toEqual({ name: "Bologna", population: 388884, beautiful: true });
   });
 
-  it("Simple object with JsonProperty annotation", () => {
+  it("Simple class with JsonProperty annotation", () => {
     class City {
       @JsonProperty()
       private name: string;
@@ -505,7 +510,7 @@ describe("Testing toJson vs", () => {
     expect(json).toEqual({ name: "Bologna", people: 388884, awesome: true });
   });
 
-  it("Object with children and arrays", () => {
+  it("Class with children and arrays", () => {
     class Park {
       @JsonProperty("_name")
       name: string = undefined;

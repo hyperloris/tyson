@@ -5,7 +5,7 @@ import { TypeAdapterFactory } from "./../TypeAdapterFactory";
 import { TypeToken } from "../reflect/TypeToken";
 import { Tyson } from "../Tyson";
 
-export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
+export class ArrayTypeAdapter implements TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {
     create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
       if (typeToken.type instanceof Array) {
@@ -35,8 +35,8 @@ export class ArrayTypeAdapter<E> implements TypeAdapter<E> {
     return jsonArray;
   }
 
-  read(json: any): E[] {
-    const array = new Array<E>();
+  read(json: any): any[] {
+    const array = new Array<any>();
     for (let e of json) {
       array.push(this._tyson.getAdapter(this._typeToken).read(e));
     }

@@ -8,10 +8,28 @@ import { TypeToken } from "./reflect/TypeToken";
 import { TysonBuilder } from "./TysonBuilder";
 import "reflect-metadata";
 
+/**
+ * This is the main class. Tyson is typically used by first constructing a
+ * Tyson instance and then invoking toJson or fromJson methods on it.
+ *
+ * Here is an example:
+ * Tyson tyson = new Tyson();
+ * const myObj = tyson.fromJson(json, MyClass); // deserializes json into myObj
+ * const json = tyson.toJson(myObj); // serializes myObj to json
+ *
+ * @export
+ * @class Tyson
+ */
 export class Tyson {
   private _factories: Array<TypeAdapterFactory>;
   private _typeTokenCache: Map<string, TypeAdapter<any>>;
 
+  /**
+   * Creates an instance of Tyson.
+   *
+   * @param {TysonBuilder} [builder]
+   * @memberof Tyson
+   */
   constructor(builder?: TysonBuilder) {
     this._factories = new Array();
     this._typeTokenCache = new Map();
@@ -28,20 +46,36 @@ export class Tyson {
     this._factories.push(ArrayTypeAdapter.FACTORY);
   }
 
-  public fromJson<T>(json: {}, classOfT: {new(): T; }): T;
-  public fromJson<T>(json: any[], classOfT: {new(): T; }[]): T[];
-  public fromJson<T>(json: any, classOfT: any): any {
-    if (json === undefined || classOfT === undefined) {
+  /**
+   * This method deserializes the specified JSON into an object|array of the specified type.
+   *
+   * @template T the type of the desired object|array
+   * @param json the JSON object|array used during deserialization
+   * @param type a class|array of T
+   * @returns an object|array of type T. Returns undefined if json or type are undefined.
+   * @memberof Tyson
+   */
+  public fromJson<T>(json: {}, type: {new(): T; }): T;
+  public fromJson<T>(json: any[], type: {new(): T; }[]): T[];
+  public fromJson<T>(json: any, type: any): any {
+    if (json === undefined || type === undefined) {
       return undefined;
     }
 
-    const typeToken = new TypeToken(classOfT);
+    const typeToken = new TypeToken(type);
     return this.getAdapter(typeToken).read(json);
   }
 
-  public toJson<T>(src: T): {};
-  public toJson<T>(src: T[]): any[];
-  public toJson<T>(src: any): any {
+  /**
+   * This method serializes the specified object, into its equivalent JSON representation.
+   *
+   * @param src the object|array for which JSON representation is to be created
+   * @returns JSON representation of src
+   * @memberof Tyson
+   */
+  public toJson(src: any[]): any[];
+  public toJson(src: any): {};
+  public toJson(src: any): any {
     if (src === undefined) {
       return undefined;
     }
@@ -50,6 +84,17 @@ export class Tyson {
     return this.getAdapter(typeToken).write(src);
   }
 
+  /**
+   * Returns the type adapter for the specified typeToken.
+   * This method uses a cache to avoid re-creating a new adapter
+   * for a previously requested TypeToken.
+   *
+   * @template T
+   * @param {TypeToken<T>} typeToken
+   * @returns {TypeAdapter<T>} a TypeAdapter of T
+   * @throws Will throw an error if Tyson cannot deserialize / serialize typeToken
+   * @memberof Tyson
+   */
   public getAdapter<T>(typeToken: TypeToken<T>): TypeAdapter<T> {
     const cached = this._typeTokenCache.get(typeToken.hash);
     if (cached !== undefined) {

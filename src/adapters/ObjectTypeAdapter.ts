@@ -49,8 +49,8 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
       const objKey = entry[0];
       const metadata = entry[1];
 
-      // If there are no metadata, there is nothing we can do
       if (metadata === undefined) {
+        // If there are no metadata, there is nothing to do
         obj[objKey] = json[objKey];
       } else {
         const jsonKey = metadata.name || objKey;
@@ -74,6 +74,10 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
     return obj;
   }
 
+  /**
+   * This method extracts all the metadata of the class and saves them in a map.
+   * In this way the reflection operations are performed only once when the adapter is created.
+   */
   private reflect(): void {
     const obj = new (this._typeToken.type as { new(): any; })();
     for (let key of Object.keys(obj)) {

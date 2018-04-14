@@ -11,7 +11,9 @@ export class ReflectionUtils {
   }
 
   public static getTypeName(target: any): string {
-    return target instanceof Array ? Constants.ARRAY_TYPE : target.toString().trim().split(/[\s\()]/g)[1];
+    return target instanceof Array
+      ? Constants.ARRAY_TYPE
+      : target.toString().trim().split(/[\s\()]/g)[1];
   }
 
   public static isBasicType(typeName: string): boolean {

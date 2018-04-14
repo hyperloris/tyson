@@ -6,7 +6,6 @@ import { TypeToken } from "../reflect/TypeToken";
 import { Tyson } from "../Tyson";
 
 export class TypeAdapters {
-
   static readonly BOOLEAN: TypeAdapter<boolean> = {
     write(src: boolean): any {
       return src;

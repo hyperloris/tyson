@@ -4,6 +4,7 @@
  * extend this class to customize the conversion.
  *
  * Here is an example:
+ * <pre>
  * class PointAdapter implements TypeAdapter<Point> {
  *   write(src: Point): any {
  *     return [src.lat, src.lon];
@@ -12,6 +13,7 @@
  *     return new Point(json[0], json[1]);
  *   }
  * }
+ * </pre>
  *
  * @export
  * @interface TypeAdapter

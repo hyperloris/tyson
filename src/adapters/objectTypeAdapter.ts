@@ -1,11 +1,11 @@
-import { Constants } from "../Constants";
-import { DeserializationError } from "./../exceptions/DeserializationError";
-import { PropertyMetadata } from "./../reflect/PropertyMetadata";
-import { ReflectionUtils } from "../reflect/ReflectionUtils";
-import { TypeAdapter } from "../TypeAdapter";
-import { TypeAdapterFactory } from "../TypeAdapterFactory";
-import { TypeToken } from "../reflect/TypeToken";
-import { Tyson } from "../Tyson";
+import { Constants } from "../constants";
+import { DeserializationError } from "./../exceptions/deserializationError";
+import { PropertyMetadata } from "./../reflect/propertyMetadata";
+import { ReflectionUtils } from "../reflect/reflectionUtils";
+import { TypeAdapter } from "../typeAdapter";
+import { TypeAdapterFactory } from "../typeAdapterFactory";
+import { TypeToken } from "../reflect/typeToken";
+import { Tyson } from "../tyson";
 
 export class ObjectTypeAdapter implements TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {

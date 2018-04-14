@@ -1,18 +1,20 @@
-import { TypeAdapter } from "./TypeAdapter";
-import { TypeAdapterFactory } from "./TypeAdapterFactory";
-import { TypeAdapters } from "./adapters/TypeAdapters";
-import { TypeToken } from "./reflect/TypeToken";
-import { Tyson } from "./Tyson";
+import { TypeAdapter } from "./typeAdapter";
+import { TypeAdapterFactory } from "./typeAdapterFactory";
+import { TypeAdapters } from "./adapters/typeAdapters";
+import { TypeToken } from "./reflect/typeToken";
+import { Tyson } from "./tyson";
 
 /**
  * Use this builder to construct a Tyson instance when you need to set configuration
  * options other than the default.
  *
  * Here is an example:
+ * <pre>
  * const tyson = new TysonBuilder()
  *   .registerTypeAdapter(Point, pointAdapter)
  *   .registerTypeAdapter(User, userAdapter)
  *   .build();
+ * </pre>
  *
  * @export
  * @class TysonBuilder

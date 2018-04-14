@@ -1,5 +1,5 @@
-import { Constants } from "../Constants";
-import { ReflectionUtils } from "./ReflectionUtils";
+import { Constants } from "../constants";
+import { ReflectionUtils } from "./reflectionUtils";
 
 export class TypeToken<T> {
   private _type: {new(): T; } | {new(): T; }[];

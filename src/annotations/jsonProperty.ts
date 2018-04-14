@@ -1,11 +1,12 @@
-import { Constants } from "../Constants";
-import { PropertyMetadata } from "../reflect/PropertyMetadata";
+import { Constants } from "../constants";
+import { PropertyMetadata } from "../reflect/propertyMetadata";
 
 /**
  * An annotation that indicates this property should be serialized/deserialized
  * following the specified name and/or type.
  *
  * Here is an example:
+ * <pre>
  * class MyClass {
  *   @JsonProperty("name")
  *   a: string = undefined;
@@ -14,6 +15,7 @@ import { PropertyMetadata } from "../reflect/PropertyMetadata";
  * }
  *
  * { "name": "value", "name1": [4, 8, 15, 16, 23, 42] } // The corresponding JSON
+ * </pre>
  *
  * @export
  * @template T

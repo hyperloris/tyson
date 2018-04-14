@@ -1,9 +1,9 @@
-import { Constants } from "../Constants";
-import { ReflectionUtils } from "../reflect/ReflectionUtils";
-import { TypeAdapter } from "../TypeAdapter";
-import { TypeAdapterFactory } from "./../TypeAdapterFactory";
-import { TypeToken } from "../reflect/TypeToken";
-import { Tyson } from "../Tyson";
+import { Constants } from "../constants";
+import { ReflectionUtils } from "../reflect/reflectionUtils";
+import { TypeAdapter } from "../typeAdapter";
+import { TypeAdapterFactory } from "./../typeAdapterFactory";
+import { TypeToken } from "../reflect/typeToken";
+import { Tyson } from "../tyson";
 
 export class ArrayTypeAdapter implements TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {

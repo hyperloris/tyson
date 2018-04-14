@@ -1,5 +1,5 @@
-import { Constants } from "../Constants";
-import { PropertyMetadata } from "./PropertyMetadata";
+import { Constants } from "../constants";
+import { PropertyMetadata } from "./propertyMetadata";
 
 export class ReflectionUtils {
   public static getMetadata<T>(target: any, propertyKey: string): PropertyMetadata<T> {

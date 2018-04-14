@@ -1,11 +1,11 @@
-import { ArrayTypeAdapter } from "./adapters/ArrayTypeAdapter";
-import { Constants } from "./Constants";
-import { ObjectTypeAdapter } from "./adapters/ObjectTypeAdapter";
-import { TypeAdapter } from "./TypeAdapter";
-import { TypeAdapterFactory } from "./TypeAdapterFactory";
-import { TypeAdapters } from "./adapters/TypeAdapters";
-import { TypeToken } from "./reflect/TypeToken";
-import { TysonBuilder } from "./TysonBuilder";
+import { ArrayTypeAdapter } from "./adapters/arrayTypeAdapter";
+import { Constants } from "./constants";
+import { ObjectTypeAdapter } from "./adapters/objectTypeAdapter";
+import { TypeAdapter } from "./typeAdapter";
+import { TypeAdapterFactory } from "./typeAdapterFactory";
+import { TypeAdapters } from "./adapters/typeAdapters";
+import { TypeToken } from "./reflect/typeToken";
+import { TysonBuilder } from "./tysonBuilder";
 import "reflect-metadata";
 
 /**
@@ -13,9 +13,11 @@ import "reflect-metadata";
  * Tyson instance and then invoking toJson or fromJson methods on it.
  *
  * Here is an example:
+ * <pre>
  * Tyson tyson = new Tyson();
  * const myObj = tyson.fromJson(json, MyClass); // deserializes json into myObj
  * const json = tyson.toJson(myObj); // serializes myObj to json
+ * </pre>
  *
  * @export
  * @class Tyson

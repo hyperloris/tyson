@@ -1,7 +1,7 @@
-import { JsonProperty } from "../src/annotations/JsonProperty";
-import { TypeAdapter } from "./../src/TypeAdapter";
-import { Tyson } from "../src/Tyson";
-import { TysonBuilder } from "./../src/TysonBuilder";
+import { JsonProperty } from "../src/annotations/jsonProperty";
+import { TypeAdapter } from "./../src/typeAdapter";
+import { Tyson } from "../src/tyson";
+import { TysonBuilder } from "./../src/tysonBuilder";
 
 describe("Tyson test", () => {
   it("Tyson is instantiable", () => {

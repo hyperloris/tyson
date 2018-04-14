@@ -1,9 +1,9 @@
-import { Constants } from "../Constants";
-import { DeserializationError } from "./../exceptions/DeserializationError";
-import { TypeAdapter } from "../TypeAdapter";
-import { TypeAdapterFactory } from "../TypeAdapterFactory";
-import { TypeToken } from "../reflect/TypeToken";
-import { Tyson } from "../Tyson";
+import { Constants } from "../constants";
+import { DeserializationError } from "./../exceptions/deserializationError";
+import { TypeAdapter } from "../typeAdapter";
+import { TypeAdapterFactory } from "../typeAdapterFactory";
+import { TypeToken } from "../reflect/typeToken";
+import { Tyson } from "../tyson";
 
 export class TypeAdapters {
   static readonly BOOLEAN: TypeAdapter<boolean> = {

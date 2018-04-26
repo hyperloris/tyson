@@ -1,5 +1,5 @@
 <div align="center">
-  <img style="margin:32px" src="https://github.com/hyperloris/tyson/blob/master/static/img/tyson-logo.png" />
+  <img src="https://github.com/hyperloris/tyson/blob/master/static/img/tyson-logo.png" width="430" />
   <div>
     <a href="https://www.npmjs.com/package/@hyperloris/tyson">
       <img src="https://img.shields.io/npm/v/@hyperloris/tyson.svg?style=flat-square" />
@@ -18,25 +18,35 @@
 
 > Tyson is a TypeScript serialization/deserialization library to convert objects to/from JSON.
 
-## Inspiration
-The library is inspired by the [Gson](https://github.com/google/gson) library.
+## Features
+
+* Simple `toJson()` and `fromJson()` methods for conversions
+* Different names between json and class properties
+* Custom conversions
 
 ## Installation
+
 You can install `tyson` using [npm](http://npmjs.org):
+
 ```console
 npm install --save @hyperloris/tyson
 ```
 
 ## Usage
+
 The primary class to use is [`Tyson`](https://hyperloris.github.io/tyson/classes/tyson.html) which you can just create by calling `new Tyson()`. There is also a class [`TysonBuilder`](https://hyperloris.github.io/tyson/classes/tysonbuilder.html) available that can be used to create a Tyson instance with various settings (e.g. register a custom type adapter).
 
 ### Requirements
+
 There are two requirements to be met in order to make the library work properly:
-- Properties need to be preceded by the [`@JsonProperty`](https://hyperloris.github.io/tyson/globals.html#jsonproperty) annotation
-- Properties need to have a default value (e.g. `undefined`)
+
+* Properties need to be preceded by the [`@JsonProperty`](https://hyperloris.github.io/tyson/globals.html#jsonproperty) annotation
+* Properties need to have a default value (e.g. `undefined`)
 
 ### A nice example
+
 Let's start with a JSON rappresenting a city:
+
 ```json
 {
   "name": "Bologna",
@@ -50,6 +60,7 @@ Let's start with a JSON rappresenting a city:
 ```
 
 Now we need a couple of TypeScript classes:
+
 ```typescript
 export class User {
   @JsonProperty("full_name")
@@ -71,6 +82,7 @@ export class City {
 ```
 
 At this point we are ready to use the library:
+
 ```typescript
 const tyson = new Tyson();
 const city = tyson.fromJson(json, City);
@@ -78,7 +90,13 @@ const json = tyson.toJson(city);
 ```
 
 ## Documentation
+
 Tyson [API](http://hyperloris.github.io/tyson): generated with [TypeDoc](http://typedoc.org) at every release.
 
+## Inspiration
+
+The library is inspired by the [Gson](https://github.com/google/gson) library.
+
 ## License
+
 MIT

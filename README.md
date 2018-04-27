@@ -45,7 +45,7 @@ There are two requirements to be met in order to make the library work properly:
 
 ### A nice example
 
-Let's start with a JSON rappresenting a city:
+Let's start with a JSON representing a city:
 
 ```json
 {

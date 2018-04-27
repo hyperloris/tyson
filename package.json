@@ -1,5 +1,5 @@
 {
-  "name": "tyson",
+  "name": "@hyperloris/tyson",
   "version": "0.0.0-development",
   "description": "A TypeScript serialization/deserialization library to convert objects to/from JSON.",
   "keywords": [
@@ -23,6 +23,9 @@
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",

@@ -1,11 +1,14 @@
 <div align="center">
-  <img src="https://github.com/hyperloris/tyson/blob/master/static/img/tyson-logo.png" width="430" />
+  <img src="https://imgur.com/W9211Go" width="430" />
   <div>
     <a href="https://www.npmjs.com/package/@hyperloris/tyson">
       <img src="https://img.shields.io/npm/v/@hyperloris/tyson.svg?style=flat-square" />
     </a>
     <a href="https://travis-ci.org/hyperloris/tyson">
       <img src="https://img.shields.io/travis/hyperloris/tyson/master.svg?style=flat-square" />
+    </a>
+    <a href="https://github.com/hyperloris/tyson/issues">
+      <img src="https://img.shields.io/github/issues/hyperloris/tyson.svg?style=flat-square">
     </a>
     <a href="https://coveralls.io/github/hyperloris/tyson?branch=master">
       <img src="https://img.shields.io/coveralls/github/hyperloris/tyson.svg?style=flat-square" />
@@ -45,7 +48,7 @@ There are two requirements to be met in order to make the library work properly:
 
 ### A nice example
 
-Let's start with a JSON rappresenting a city:
+Let's start with a JSON representing a city:
 
 ```json
 {

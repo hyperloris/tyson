@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://imgur.com/W9211Go" width="430" />
+  <img src="https://imgur.com/W9211Go.png" width="430" />
   <div>
     <a href="https://www.npmjs.com/package/@hyperloris/tyson">
       <img src="https://img.shields.io/npm/v/@hyperloris/tyson.svg?style=flat-square" />

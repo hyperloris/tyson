@@ -28,23 +28,8 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
     this.reflect();
   }
 
-  public write(src: any): any {
-    const jsonObj: any = {};
-    for (let key in src) {
-      const metadata = this._objectMap.get(key);
-      if (metadata === undefined) {
-        jsonObj[key] = src[key];
-      } else {
-        const jsonKey = metadata.name || key;
-        const typeToken = new TypeToken(metadata.type);
-        jsonObj[jsonKey] = this._tyson.getAdapter(typeToken).write(src[key]);
-      }
-    }
-    return jsonObj;
-  }
-
-  public read(json: any): any {
-    const obj = new (this._typeToken.type as { new(): any; })();
+  public fromJson(json: any): any {
+    const obj = new (this._typeToken.type as { new (): any })();
     for (let entry of Array.from(this._objectMap.entries())) {
       const objKey = entry[0];
       const metadata = entry[1];
@@ -58,7 +43,7 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
         const typeToken = new TypeToken(metadata.type);
 
         try {
-          obj[objKey] = this._tyson.getAdapter(typeToken).read(innerJson);
+          obj[objKey] = this._tyson.getAdapter(typeToken).fromJson(innerJson);
         } catch (err) {
           if (err instanceof DeserializationError) {
             throw new DeserializationError(
@@ -74,12 +59,27 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
     return obj;
   }
 
+  public toJson(src: any): any {
+    const jsonObj: any = {};
+    for (let key in src) {
+      const metadata = this._objectMap.get(key);
+      if (metadata === undefined) {
+        jsonObj[key] = src[key];
+      } else {
+        const jsonKey = metadata.name || key;
+        const typeToken = new TypeToken(metadata.type);
+        jsonObj[jsonKey] = this._tyson.getAdapter(typeToken).toJson(src[key]);
+      }
+    }
+    return jsonObj;
+  }
+
   /**
    * This method extracts all the metadata of the class and saves them in a map.
    * In this way the reflection operations are performed only once when the adapter is created.
    */
   private reflect(): void {
-    const obj = new (this._typeToken.type as { new(): any; })();
+    const obj = new (this._typeToken.type as { new (): any })();
     for (let key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getMetadata(obj, key);
 

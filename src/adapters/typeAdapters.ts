@@ -7,53 +7,47 @@ import { Tyson } from "../tyson";
 
 export class TypeAdapters {
   static readonly BOOLEAN: TypeAdapter<boolean> = {
-    write(src: boolean): any {
-      return src;
-    },
-    read(json: any): boolean {
+    fromJson(json: any): boolean {
       if (typeof json !== Constants.BOOLEAN_TYPE_LOWERCASE) {
-        throw new DeserializationError(
-          `Value '${json}' does not match the expected type: boolean.`
-        );
+        throw new DeserializationError(`Value '${json}' does not match the expected type: boolean.`);
       }
       return json;
+    },
+    toJson(src: boolean): any {
+      return src;
     }
   };
 
   static readonly NUMBER: TypeAdapter<number> = {
-    write(src: number): any {
-      return src;
-    },
-    read(json: any): number {
+    fromJson(json: any): number {
       if (typeof json !== Constants.NUMBER_TYPE_LOWERCASE) {
-        throw new DeserializationError(
-          `Value '${json}' does not match the expected type: number.`
-        );
+        throw new DeserializationError(`Value '${json}' does not match the expected type: number.`);
       }
       return json;
+    },
+    toJson(src: number): any {
+      return src;
     }
   };
 
   static readonly STRING: TypeAdapter<string> = {
-    write(src: string): any {
-      return src;
-    },
-    read(json: any): string {
+    fromJson(json: any): string {
       if (typeof json !== Constants.STRING_TYPE_LOWERCASE) {
-        throw new DeserializationError(
-          `Value '${json}' does not match the expected type: string.`
-        );
+        throw new DeserializationError(`Value '${json}' does not match the expected type: string.`);
       }
       return json;
+    },
+    toJson(src: string): any {
+      return src;
     }
   };
 
   static readonly DATE: TypeAdapter<Date> = {
-    write(src: Date): any {
-      return src.getTime();
-    },
-    read(json: any): Date {
+    fromJson(json: any): Date {
       return new Date(json);
+    },
+    toJson(src: Date): any {
+      return src.getTime();
     }
   };
 
@@ -62,7 +56,7 @@ export class TypeAdapters {
   static STRING_FACTORY = TypeAdapters.newFactory(String, TypeAdapters.STRING);
   static DATE_FACTORY = TypeAdapters.newFactory(Date, TypeAdapters.DATE);
 
-  static newFactory<TT>(type: {new(): TT; } | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
+  static newFactory<TT>(type: { new (): TT } | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
     let factory: TypeAdapterFactory;
     if (type instanceof TypeToken) {
       factory = {

@@ -383,11 +383,11 @@ describe("Testing fromJson vs", () => {
     }
 
     const pointAdapter: TypeAdapter<Point> = {
-      write(src: Point): any {
-        return [src.lat, src.lon];
-      },
-      read(json: any): Point {
+      fromJson(json: any): Point {
         return new Point(json[0], json[1]);
+      },
+      toJson(src: Point): any {
+        return [src.lat, src.lon];
       }
     };
 

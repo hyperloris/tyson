@@ -37,7 +37,9 @@ export class Tyson {
     this._typeTokenCache = new Map();
 
     // Users' factories
-    if (builder) { this._factories.push(...builder.factories); }
+    if (builder) {
+      this._factories.push(...builder.factories);
+    }
 
     // Adapters for basic types
     this._factories.push(TypeAdapters.BOOLEAN_FACTORY);
@@ -57,15 +59,15 @@ export class Tyson {
    * @returns an object|array of type T. Returns undefined if json or type are undefined.
    * @memberof Tyson
    */
-  public fromJson<T>(json: {}, type: {new(): T; }): T;
-  public fromJson<T>(json: any[], type: {new(): T; }[]): T[];
+  public fromJson<T>(json: {}, type: { new (): T }): T;
+  public fromJson<T>(json: any[], type: { new (): T }[]): T[];
   public fromJson<T>(json: any, type: any): any {
     if (json === undefined || type === undefined) {
       return undefined;
     }
 
     const typeToken = new TypeToken(type);
-    return this.getAdapter(typeToken).read(json);
+    return this.getAdapter(typeToken).fromJson(json);
   }
 
   /**
@@ -83,7 +85,7 @@ export class Tyson {
     }
 
     const typeToken = new TypeToken(src.constructor);
-    return this.getAdapter(typeToken).write(src);
+    return this.getAdapter(typeToken).toJson(src);
   }
 
   /**

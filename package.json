@@ -47,7 +47,7 @@
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
-      "prettier --write --print-width 100",
+      "prettier --write --print-width 120",
       "git add"
     ]
   },

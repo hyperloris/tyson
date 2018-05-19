@@ -27,19 +27,19 @@ export class ArrayTypeAdapter implements TypeAdapter<any> {
     this._typeToken = typeToken;
   }
 
-  write(src: any): any {
-    const jsonArray: any = [];
-    for (let e of src) {
-      jsonArray.push(this._tyson.getAdapter(this._typeToken).write(e));
-    }
-    return jsonArray;
-  }
-
-  read(json: any): any[] {
+  fromJson(json: any): any[] {
     const array = new Array<any>();
     for (let e of json) {
-      array.push(this._tyson.getAdapter(this._typeToken).read(e));
+      array.push(this._tyson.getAdapter(this._typeToken).fromJson(e));
     }
     return array;
+  }
+
+  toJson(src: any): any {
+    const jsonArray: any = [];
+    for (let e of src) {
+      jsonArray.push(this._tyson.getAdapter(this._typeToken).toJson(e));
+    }
+    return jsonArray;
   }
 }

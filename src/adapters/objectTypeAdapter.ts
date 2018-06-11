@@ -7,7 +7,7 @@ import { TypeAdapterFactory } from "../typeAdapterFactory";
 import { TypeToken } from "../reflect/typeToken";
 import { Tyson } from "../tyson";
 
-export class ObjectTypeAdapter implements TypeAdapter<any> {
+export class ObjectTypeAdapter extends TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {
     create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
       if (typeToken.name === Constants.OBJECT_TYPE) {
@@ -22,13 +22,14 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
   private _objectMap: Map<string, PropertyMetadata<any>>;
 
   constructor(tyson: Tyson, typeToken: TypeToken<any>) {
+    super();
     this._tyson = tyson;
     this._typeToken = typeToken;
     this._objectMap = new Map();
     this.reflect();
   }
 
-  public fromJson(json: any): any {
+  protected _fromJson(json: any): any {
     const obj = new (this._typeToken.type as { new (): any })();
     for (let entry of Array.from(this._objectMap.entries())) {
       const objKey = entry[0];
@@ -59,7 +60,7 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
     return obj;
   }
 
-  public toJson(src: any): any {
+  protected _toJson(src: any): any {
     const jsonObj: any = {};
     for (let key in src) {
       const metadata = this._objectMap.get(key);
@@ -68,7 +69,15 @@ export class ObjectTypeAdapter implements TypeAdapter<any> {
       } else {
         const jsonKey = metadata.name || key;
         const typeToken = new TypeToken(metadata.type);
-        jsonObj[jsonKey] = this._tyson.getAdapter(typeToken).toJson(src[key]);
+        const value = this._tyson.getAdapter(typeToken).toJson(src[key]);
+
+        // The default behavior is to ignore properties with a null or undefined values,
+        // unless it is set differently with the builder.
+        if (value === null && !this._tyson.serializeNulls) {
+          continue;
+        }
+
+        jsonObj[jsonKey] = value;
       }
     }
     return jsonObj;

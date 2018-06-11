@@ -5,11 +5,11 @@
  *
  * Here is an example:
  * <pre>
- * class PointAdapter implements TypeAdapter<Point> {
- *   fromJson(json: any): Point {
+ * class PointAdapter extends TypeAdapter<Point> {
+ *   protected _fromJson(json: any): Point {
  *     return new Point(json[0], json[1]);
  *   }
- *   toJson(src: Point): any {
+ *   protected _toJson(src: Point): any {
  *     return [src.lat, src.lon];
  *   }
  * }
@@ -19,7 +19,22 @@
  * @interface TypeAdapter
  * @template T
  */
-export interface TypeAdapter<T> {
-  fromJson(json: any): T | T[];
-  toJson(src: T): any;
+export abstract class TypeAdapter<T> {
+  public fromJson(json: any): T | T[] | undefined {
+    if (json === null) {
+      return undefined;
+    }
+    return this._fromJson(json);
+  }
+
+  public toJson(src: T): any {
+    if (src === null || src === undefined) {
+      return null;
+    } else {
+      return this._toJson(src);
+    }
+  }
+
+  protected abstract _fromJson(json: any): T | T[];
+  protected abstract _toJson(src: T): any;
 }

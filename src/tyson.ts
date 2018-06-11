@@ -25,6 +25,7 @@ import "reflect-metadata";
 export class Tyson {
   private _factories: Array<TypeAdapterFactory>;
   private _typeTokenCache: Map<string, TypeAdapter<any>>;
+  private _serializeNulls = Constants.DEFAULT_SERIALIZE_NULLS;
 
   /**
    * Creates an instance of Tyson.
@@ -36,9 +37,10 @@ export class Tyson {
     this._factories = new Array();
     this._typeTokenCache = new Map();
 
-    // Users' factories
+    // Users' configs
     if (builder) {
       this._factories.push(...builder.factories);
+      this._serializeNulls = builder.serializeNulls;
     }
 
     // Adapters for basic types
@@ -48,6 +50,10 @@ export class Tyson {
     this._factories.push(TypeAdapters.DATE_FACTORY);
     this._factories.push(ObjectTypeAdapter.FACTORY);
     this._factories.push(ArrayTypeAdapter.FACTORY);
+  }
+
+  public get serializeNulls(): boolean {
+    return this._serializeNulls;
   }
 
   /**

@@ -1,3 +1,4 @@
+import { Constants } from "./constants";
 import { TypeAdapter } from "./typeAdapter";
 import { TypeAdapterFactory } from "./typeAdapterFactory";
 import { TypeAdapters } from "./adapters/typeAdapters";
@@ -21,6 +22,7 @@ import { Tyson } from "./tyson";
  */
 export class TysonBuilder {
   private _factories: Array<TypeAdapterFactory>;
+  private _serializeNulls = Constants.DEFAULT_SERIALIZE_NULLS;
 
   constructor() {
     this._factories = new Array();
@@ -28,6 +30,10 @@ export class TysonBuilder {
 
   public get factories() {
     return this._factories;
+  }
+
+  public get serializeNulls() {
+    return this._serializeNulls;
   }
 
   /**
@@ -42,7 +48,7 @@ export class TysonBuilder {
    * @returns {TysonBuilder} a reference to this TysonBuilder
    * @memberof TysonBuilder
    */
-  public registerTypeAdapter<T>(type: {new(): T; }, typeAdapter: TypeAdapter<T>): TysonBuilder {
+  public registerTypeAdapter<T>(type: { new (): T }, typeAdapter: TypeAdapter<T>): TysonBuilder {
     this._factories.push(TypeAdapters.newFactory(new TypeToken(type), typeAdapter));
     return this;
   }
@@ -56,6 +62,18 @@ export class TysonBuilder {
    */
   public registerTypeAdapterFactory(factory: TypeAdapterFactory): TysonBuilder {
     this._factories.push(factory);
+    return this;
+  }
+
+  /**
+   * Configure Tyson to serialize null fields. By default, Tyson omits all fields that are null
+   * during serialization.
+   *
+   * @returns {TysonBuilder} a reference to this TysonBuilder
+   * @memberof TysonBuilder
+   */
+  public enableNullsSerialization(): TysonBuilder {
+    this._serializeNulls = true;
     return this;
   }
 

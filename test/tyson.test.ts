@@ -382,20 +382,51 @@ describe("Testing fromJson vs", () => {
       }
     }
 
-    const pointAdapter: TypeAdapter<Point> = {
-      fromJson(json: any): Point {
+    class PointAdapter extends TypeAdapter<Point> {
+      protected _fromJson(json: any): Point {
         return new Point(json[0], json[1]);
-      },
-      toJson(src: Point): any {
+      }
+      protected _toJson(src: Point) {
         return [src.lat, src.lon];
       }
-    };
+    }
 
     const tyson = new TysonBuilder()
-      .registerTypeAdapter(Point, pointAdapter)
+      .registerTypeAdapter(Point, new PointAdapter())
       .build();
     const city = tyson.fromJson(json, City);
     expect(city.getPoint().toString()).toBe("lat=44.498955, lon=11.327591");
+  });
+
+  it("Nulls with default Tyson instance", () => {
+    const json = {
+      name: "Bologna",
+      population: null,
+      beautiful: true,
+      website: null,
+      fractions: ["Barbiano", null, "Borgo Panigale"]
+    };
+
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty()
+      population: number = undefined;
+      @JsonProperty()
+      beautiful: boolean = undefined;
+      @JsonProperty()
+      website: string = "http://bologna.it";
+      @JsonProperty({ type: [String] })
+      fractions: string[] = undefined;
+    }
+
+    const city = new Tyson().fromJson(json, City);
+    expect(city.name).toBe("Bologna");
+    expect(city.population).toBe(undefined);
+    expect(city.beautiful).toBe(true);
+    expect(city.website).toBe(undefined);
+    expect(city.fractions[1]).toBe(undefined);
+    expect(city.fractions[2]).toBe("Borgo Panigale");
   });
 
   it("A large and complex dataset", () => {
@@ -569,6 +600,58 @@ describe("Testing toJson vs", () => {
             lastCleanup: new Date("03/05/2018").getTime()
           }
         ]
+      }
+    );
+  });
+
+  it("Nulls with default Tyson instance", () => {
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty()
+      population: number = undefined;
+      @JsonProperty()
+      beautiful: boolean = undefined;
+      @JsonProperty({ type: [String] })
+      fractions: string[] = undefined;
+    }
+
+    const city = new City();
+    city.name = "Bologna";
+    city.fractions = ["Barbiano", undefined, "Borgo Panigale", null];
+
+    const json = new Tyson().toJson(city);
+    expect(json).toEqual(
+      {
+        name: "Bologna",
+        fractions: ["Barbiano", null, "Borgo Panigale", null]
+      }
+    );
+  });
+
+  it("Nulls with serialization enabled", () => {
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty()
+      population: number = undefined;
+      @JsonProperty()
+      beautiful: boolean = undefined;
+      @JsonProperty({ type: [String] })
+      fractions: string[] = undefined;
+    }
+
+    const city = new City();
+    city.name = "Bologna";
+    city.fractions = ["Barbiano", undefined, "Borgo Panigale", null];
+
+    const tyson = new TysonBuilder().enableNullsSerialization().build();
+    expect(tyson.toJson(city)).toEqual(
+      {
+        name: "Bologna",
+        population: null,
+        beautiful: null,
+        fractions: ["Barbiano", null, "Borgo Panigale", null]
       }
     );
   });

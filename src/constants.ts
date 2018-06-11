@@ -1,4 +1,5 @@
 export class Constants {
+  public static readonly DEFAULT_SERIALIZE_NULLS = false;
   public static readonly JSON_PROPERTY_METADATA_KEY = "jsonProperty";
   public static readonly OBJECT_TYPE = "Object";
   public static readonly ARRAY_TYPE = "Array";

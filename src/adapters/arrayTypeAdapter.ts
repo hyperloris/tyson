@@ -1,5 +1,3 @@
-import { Constants } from "../constants";
-import { ReflectionUtils } from "../reflect/reflectionUtils";
 import { TypeAdapter } from "../typeAdapter";
 import { TypeAdapterFactory } from "./../typeAdapterFactory";
 import { TypeToken } from "../reflect/typeToken";

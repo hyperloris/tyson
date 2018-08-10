@@ -4,7 +4,7 @@ import { PropertyMetadata } from "./../reflect/propertyMetadata";
 import { ReflectionUtils } from "../reflect/reflectionUtils";
 import { TypeAdapter } from "../typeAdapter";
 import { TypeAdapterFactory } from "../typeAdapterFactory";
-import { TypeToken } from "../reflect/typeToken";
+import { TypeToken, ClassType } from "../reflect/typeToken";
 import { Tyson } from "../tyson";
 
 export class ObjectTypeAdapter extends TypeAdapter<any> {
@@ -30,7 +30,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
   }
 
   protected _fromJson(json: any): any {
-    const obj = new (this._typeToken.type as { new (): any })();
+    const obj = new (this._typeToken.type as ClassType<any>)();
     for (let entry of Array.from(this._objectMap.entries())) {
       const objKey = entry[0];
       const metadata = entry[1];
@@ -88,7 +88,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
    * In this way the reflection operations are performed only once when the adapter is created.
    */
   private reflect(): void {
-    const obj = new (this._typeToken.type as { new (): any })();
+    const obj = new (this._typeToken.type as ClassType<any>)();
     for (let key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getMetadata(obj, key);
 

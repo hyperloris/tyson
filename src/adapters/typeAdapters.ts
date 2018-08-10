@@ -2,7 +2,7 @@ import { Constants } from "../constants";
 import { DeserializationError } from "./../exceptions/deserializationError";
 import { TypeAdapter } from "../typeAdapter";
 import { TypeAdapterFactory } from "../typeAdapterFactory";
-import { TypeToken } from "../reflect/typeToken";
+import { TypeToken, ClassType } from "../reflect/typeToken";
 import { Tyson } from "../tyson";
 
 class BOOLEAN extends TypeAdapter<boolean> {
@@ -56,7 +56,7 @@ export class TypeAdapters {
   static STRING_FACTORY = TypeAdapters.newFactory(String, new STRING());
   static DATE_FACTORY = TypeAdapters.newFactory(Date, new DATE());
 
-  static newFactory<TT>(type: { new (): TT } | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
+  static newFactory<TT>(type: ClassType<TT> | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
     let factory: TypeAdapterFactory;
     if (type instanceof TypeToken) {
       factory = {

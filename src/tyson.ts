@@ -4,7 +4,7 @@ import { ObjectTypeAdapter } from "./adapters/objectTypeAdapter";
 import { TypeAdapter } from "./typeAdapter";
 import { TypeAdapterFactory } from "./typeAdapterFactory";
 import { TypeAdapters } from "./adapters/typeAdapters";
-import { TypeToken } from "./reflect/typeToken";
+import { TypeToken, ClassType } from "./reflect/typeToken";
 import { TysonBuilder } from "./tysonBuilder";
 import "reflect-metadata";
 
@@ -65,8 +65,8 @@ export class Tyson {
    * @returns an object|array of type T. Returns undefined if json or type are undefined.
    * @memberof Tyson
    */
-  public fromJson<T>(json: {}, type: { new (): T }): T;
-  public fromJson<T>(json: any[], type: { new (): T }[]): T[];
+  public fromJson<T>(json: {}, type: ClassType<T>): T;
+  public fromJson<T>(json: any[], type: ClassType<T>[]): T[];
   public fromJson<T>(json: any, type: any): any {
     if (json === undefined || type === undefined) {
       return undefined;

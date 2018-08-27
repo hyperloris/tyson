@@ -32,13 +32,10 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
   protected _fromJson(json: any): any {
     const obj = new (this._typeToken.type as ClassType<any>)();
     for (let entry of Array.from(this._objectMap.entries())) {
-      const objKey = entry[0];
       const metadata = entry[1];
 
-      if (metadata === undefined) {
-        // If there are no metadata, there is nothing to do
-        obj[objKey] = json[objKey];
-      } else {
+      if (metadata !== undefined) {
+        const objKey = entry[0];
         const jsonKey = metadata.name || objKey;
         const innerJson = json[jsonKey];
         const typeToken = new TypeToken(metadata.type);
@@ -64,9 +61,8 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
     const jsonObj: any = {};
     for (let key in src) {
       const metadata = this._objectMap.get(key);
-      if (metadata === undefined) {
-        jsonObj[key] = src[key];
-      } else {
+
+      if (metadata !== undefined) {
         const jsonKey = metadata.name || key;
         const typeToken = new TypeToken(metadata.type);
         const value = this._tyson.getAdapter(typeToken).toJson(src[key]);

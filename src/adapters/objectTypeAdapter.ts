@@ -40,6 +40,10 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
         const innerJson = json[jsonKey];
         const typeToken = new TypeToken(metadata.type);
 
+        if (!json.hasOwnProperty(jsonKey)) {
+          continue;
+        }
+
         try {
           obj[objKey] = this._tyson.getAdapter(typeToken).fromJson(innerJson);
         } catch (err) {

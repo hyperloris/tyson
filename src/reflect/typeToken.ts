@@ -6,17 +6,17 @@ export type ClassType<T> = {
 };
 
 export class TypeToken<T> {
-  private _type: ClassType<T> | ClassType<T>[];
+  private _type: ClassType<T> | any[];
   private _name: string;
   private _hash: string;
 
-  constructor(type: ClassType<T> | ClassType<T>[], name?: string) {
+  constructor(type: ClassType<T> | any[], name?: string) {
     this._type = type;
     this._name = name || this.generateName();
     this._hash = ReflectionUtils.getTypeName(this._type) + this._name;
   }
 
-  public get type(): ClassType<T> | ClassType<T>[] {
+  public get type(): ClassType<T> | any[] {
     return this._type;
   }
 

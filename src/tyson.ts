@@ -14,7 +14,7 @@ import "reflect-metadata";
  *
  * Here is an example:
  * <pre>
- * Tyson tyson = new Tyson();
+ * const tyson = new Tyson();
  * const myObj = tyson.fromJson(json, MyClass); // deserializes json into myObj
  * const json = tyson.toJson(myObj); // serializes myObj to json
  * </pre>
@@ -65,32 +65,32 @@ export class Tyson {
    * @returns an object|array of type T. Returns undefined if json or type are undefined.
    * @memberof Tyson
    */
-  public fromJson<T>(json: {}, type: ClassType<T>): T;
-  public fromJson<T>(json: any[], type: ClassType<T>[]): T[];
-  public fromJson<T>(json: any, type: any): any {
-    if (json === undefined || type === undefined) {
-      return undefined;
+  public fromJson<T>(json: any[], type: any[]): any[];
+  public fromJson<T>(json: any[], type: ClassType<T>): T[];
+  public fromJson<T>(json: object, type: ClassType<T>): T;
+  public fromJson<T>(json: any[] | object, type: any[] | ClassType<T>): any[] | T[] | T | undefined {
+    // If we are in the second case (any[] and ClassType),
+    // we need to wrap the type into an array, in order to start
+    // with the correct adapter. This allows us to keep the API cleaner.
+    if (json instanceof Array && !(type instanceof Array)) {
+      type = [type];
     }
 
-    const typeToken = new TypeToken(type);
-    return this.getAdapter(typeToken).fromJson(json);
+    return this.getAdapter(new TypeToken(type)).fromJson(json);
   }
 
   /**
    * This method serializes the specified object, into its equivalent JSON representation.
    *
    * @param src the object|array for which JSON representation is to be created
+   * @param type the specific type of src (required for arrays)
    * @returns JSON representation of src
    * @memberof Tyson
    */
-  public toJson(src: any[]): any[];
-  public toJson(src: any): {};
-  public toJson(src: any): any {
-    if (src === undefined) {
-      return undefined;
-    }
-
-    const typeToken = new TypeToken(src.constructor);
+  public toJson(src: any[], type: ClassType<any> | any[]): any[];
+  public toJson(src: object, type?: ClassType<any>): any;
+  public toJson(src: any[] | object, type?: ClassType<any> | any[]): any[] | any {
+    const typeToken = new TypeToken(type || (src as any).constructor);
     return this.getAdapter(typeToken).toJson(src);
   }
 

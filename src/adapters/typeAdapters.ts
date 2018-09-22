@@ -57,20 +57,13 @@ export class TypeAdapters {
   static DATE_FACTORY = TypeAdapters.newFactory(Date, new DATE());
 
   static newFactory<TT>(type: ClassType<TT> | TypeToken<TT>, typeAdapter: TypeAdapter<TT>): TypeAdapterFactory {
-    let factory: TypeAdapterFactory;
-    if (type instanceof TypeToken) {
-      factory = {
-        create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-          return type.hash === typeToken.hash ? (typeAdapter as any) as TypeAdapter<T> : undefined;
-        }
-      };
-    } else {
-      factory = {
-        create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-          return typeToken.equalsByType(type) ? (typeAdapter as any) as TypeAdapter<T> : undefined;
-        }
-      };
+    if (!(type instanceof TypeToken)) {
+      type = new TypeToken(type);
     }
-    return factory;
+    return {
+      create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
+        return typeToken.hash === (type as TypeToken<TT>).hash ? typeAdapter as any : undefined;
+      }
+    };
   }
 }

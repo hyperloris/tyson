@@ -65,7 +65,7 @@ describe("Running fromJson|toJson", () => {
     }
 
     const city = new City("Bologna", 388884, true);
-    
+
     const json = {
       _name: "Bologna",
       _population: 388884,
@@ -225,7 +225,7 @@ describe("Running fromJson|toJson", () => {
     city.fractions = ["Barbiano", "Bertalìa", "Borgo Panigale"];
     city.temperatures = [20.7, 24.9, 27, 30.6, 34.9, 37.3];
     city.tdays = [false, false, false, false, false, true, true];
-    
+
     const json = {
       _fractions: ["Barbiano", "Bertalìa", "Borgo Panigale"],
       _temperatures: [20.7, 24.9, 27, 30.6, 34.9, 37.3],
@@ -384,6 +384,109 @@ describe("Running fromJson|toJson", () => {
             ID: 23,
             _name: "Sergio Cofferati"
           }
+        ]
+      }
+    );
+  });
+
+  it("on class with multi-type arrays annotated with JsonProperty", () => {
+    class User {
+      @JsonProperty("ID")
+      id: number = undefined;
+      @JsonProperty("_name")
+      name: string = undefined;
+    }
+
+    class City {
+      @JsonProperty({ type: [Number, Number, Boolean] })
+      territory: any[] = undefined;
+      @JsonProperty({ type: [String, [Number, User], [User]] })
+      information: any[] = undefined;
+    }
+
+    const mayor1 = new User();
+    mayor1.id = 35;
+    mayor1.name = "Virginio Merola";
+
+    const mayor2 = new User();
+    mayor2.id = 41;
+    mayor2.name = "Flavio Delbono";
+
+    const mayor3 = new User();
+    mayor3.id = 23;
+    mayor3.name = "Sergio Cofferati";
+
+    const city = new City();
+    city.territory = [44.498955, 11.327591, false];
+    city.information = ["Italy", [35, mayor1], [mayor2, mayor3]];
+
+    const json = {
+      territory: [
+        44.498955,
+        11.327591,
+        false
+      ],
+      information: [
+        "Italy",
+        [
+          35,
+          {
+            ID: 35,
+            _name: "Virginio Merola"
+          }
+        ],
+        [
+          {
+            ID: 41,
+            _name: "Flavio Delbono"
+          },
+          {
+            ID: 23,
+            _name: "Sergio Cofferati"
+          }
+        ]
+      ]
+    };
+
+    const tyson = new Tyson();
+
+    const xcity = tyson.fromJson(json, City);
+    expect(xcity).toBeInstanceOf(City);
+    expect(xcity.territory).toHaveLength(3);
+    expect(xcity.territory[0]).toBe(44.498955);
+    expect(xcity.territory[2]).toBe(false);
+    expect(xcity.information).toHaveLength(3);
+    expect(xcity.information[0]).toBe("Italy");
+    expect(xcity.information[1]).toHaveLength(2);
+    expect(xcity.information[1][1]).toBeInstanceOf(User);
+    expect(xcity.information[1][1].id).toBe(35);
+    expect(xcity.information[2]).toHaveLength(2);
+    expect(xcity.information[2][1].name).toBe("Sergio Cofferati");
+
+    const xjson = tyson.toJson(city);
+    expect(xjson).not.toBeInstanceOf(City);
+    expect(xjson).toEqual(
+      {
+        territory: [44.498955, 11.327591, false],
+        information: [
+          "Italy",
+          [
+            35,
+            {
+              ID: 35,
+              _name: "Virginio Merola"
+            }
+          ],
+          [
+            {
+              ID: 41,
+              _name: "Flavio Delbono"
+            },
+            {
+              ID: 23,
+              _name: "Sergio Cofferati"
+            }
+          ]
         ]
       }
     );
@@ -577,7 +680,7 @@ describe("Running fromJson|toJson", () => {
     expect(xcity.population).toBe(undefined);
     expect(xcity.beautiful).toBe(undefined);
   });
-  
+
   it("should fail because the provided class types do not match the ones in the json", () => {
     class City {
       @JsonProperty()
@@ -587,7 +690,7 @@ describe("Running fromJson|toJson", () => {
       @JsonProperty()
       beautiful: boolean = undefined;
     }
-    
+
     const json1 = {
       name: true,
       population: 388884,

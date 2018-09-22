@@ -10,7 +10,7 @@ import { Tyson } from "../tyson";
 export class ObjectTypeAdapter extends TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {
     create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-      if (typeToken.name === Constants.OBJECT_TYPE) {
+      if (typeof typeToken.type === Constants.FUNCTION_TYPE_LOWERCASE) {
         return new ObjectTypeAdapter(tyson, typeToken);
       }
       return undefined;
@@ -19,42 +19,39 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
 
   private _tyson: Tyson;
   private _typeToken: TypeToken<any>;
-  private _objectMap: Map<string, PropertyMetadata<any>>;
+  private _metadataMap: Map<string, PropertyMetadata<any>>;
 
   constructor(tyson: Tyson, typeToken: TypeToken<any>) {
     super();
     this._tyson = tyson;
     this._typeToken = typeToken;
-    this._objectMap = new Map();
+    this._metadataMap = new Map();
     this.reflect();
   }
 
   protected _fromJson(json: any): any {
     const obj = new (this._typeToken.type as ClassType<any>)();
-    for (let entry of Array.from(this._objectMap.entries())) {
+    for (let entry of Array.from(this._metadataMap.entries())) {
+      const objKey = entry[0];
       const metadata = entry[1];
+      const jsonKey = metadata.name || objKey;
+      const innerJson = json[jsonKey];
+      const typeToken = new TypeToken(metadata.type);
 
-      if (metadata !== undefined) {
-        const objKey = entry[0];
-        const jsonKey = metadata.name || objKey;
-        const innerJson = json[jsonKey];
-        const typeToken = new TypeToken(metadata.type);
+      if (!json.hasOwnProperty(jsonKey)) {
+        continue;
+      }
 
-        if (!json.hasOwnProperty(jsonKey)) {
-          continue;
-        }
-
-        try {
-          obj[objKey] = this._tyson.getAdapter(typeToken).fromJson(innerJson);
-        } catch (err) {
-          if (err instanceof DeserializationError) {
-            throw new DeserializationError(
-              `Property '${objKey}' of ${obj.constructor.name} does not match type of '${jsonKey}'.`,
-              json
-            );
-          } else {
-            throw err;
-          }
+      try {
+        obj[objKey] = this._tyson.getAdapter(typeToken).fromJson(innerJson);
+      } catch (err) {
+        if (err instanceof DeserializationError) {
+          throw new DeserializationError(
+            `Property '${objKey}' of ${obj.constructor.name} does not match type of '${jsonKey}'.`,
+            json
+          );
+        } else {
+          throw err;
         }
       }
     }
@@ -62,11 +59,11 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
   }
 
   protected _toJson(src: any): any {
-    const jsonObj: any = {};
+    const obj: any = {};
     for (let key in src) {
-      const metadata = this._objectMap.get(key);
+      const metadata = this._metadataMap.get(key);
 
-      if (metadata !== undefined) {
+      if (metadata) {
         const jsonKey = metadata.name || key;
         const typeToken = new TypeToken(metadata.type);
         const value = this._tyson.getAdapter(typeToken).toJson(src[key]);
@@ -77,10 +74,10 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
           continue;
         }
 
-        jsonObj[jsonKey] = value;
+        obj[jsonKey] = value;
       }
     }
-    return jsonObj;
+    return obj;
   }
 
   /**
@@ -92,8 +89,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
     for (let key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getMetadata(obj, key);
 
-      if (metadata === undefined) {
-        this._objectMap.set(key, metadata);
+      if (!metadata) {
         continue;
       }
 
@@ -102,7 +98,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
         metadata.type = ReflectionUtils.getType(obj, key);
       }
 
-      this._objectMap.set(key, metadata);
+      this._metadataMap.set(key, metadata);
     }
   }
 }

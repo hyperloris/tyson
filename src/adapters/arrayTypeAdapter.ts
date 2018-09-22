@@ -7,11 +7,7 @@ export class ArrayTypeAdapter extends TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {
     create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
       if (typeToken.type instanceof Array) {
-        // Nasted arrays are not supported right now
-        if (typeToken.type.length === 1) {
-          const nestedTypeToken = new TypeToken(typeToken.type[0]);
-          return new ArrayTypeAdapter(tyson, nestedTypeToken);
-        }
+        return new ArrayTypeAdapter(tyson, typeToken);
       }
       return undefined;
     }
@@ -27,18 +23,27 @@ export class ArrayTypeAdapter extends TypeAdapter<any> {
   }
 
   protected _fromJson(json: any): any[] {
-    const array = new Array<any>();
-    for (let e of json) {
-      array.push(this._tyson.getAdapter(this._typeToken).fromJson(e));
-    }
-    return array;
+    return this.convertSingleOrMultiTypeArray(true, json);
   }
 
-  protected _toJson(src: any): any {
-    const jsonArray: any = [];
-    for (let e of src) {
-      jsonArray.push(this._tyson.getAdapter(this._typeToken).toJson(e));
+  protected _toJson(src: any): any[] {
+    return this.convertSingleOrMultiTypeArray(false, src);
+  }
+
+  private convertSingleOrMultiTypeArray(isFrom: boolean, inArray: any[]): any[] {
+    const array = [];
+    const types = this._typeToken.type as any[];
+    if (types.length === 1) {
+      const adapter = this._tyson.getAdapter(new TypeToken(types[0]));
+      for (let value of inArray) {
+        array.push(isFrom ? adapter.fromJson(value) : adapter.toJson(value));
+      }
+    } else {
+      for (let i in types) {
+        const adapter = this._tyson.getAdapter(new TypeToken(types[i]));
+        array.push(isFrom ? adapter.fromJson(inArray[i]) : adapter.toJson(inArray[i]));
+      }
     }
-    return jsonArray;
+    return array;
   }
 }

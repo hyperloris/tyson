@@ -118,6 +118,6 @@ export class Tyson {
         return candidate;
       }
     }
-    throw new Error("Tyson cannot handle " + typeToken);
+    throw new Error("Tyson cannot handle " + typeToken.hash);
   }
 }

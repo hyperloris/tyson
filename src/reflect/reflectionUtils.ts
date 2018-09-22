@@ -13,15 +13,29 @@ export class ReflectionUtils {
   public static getTypeName(target: any): string {
     return target instanceof Array
       ? Constants.ARRAY_TYPE
-      : target.toString().trim().split(/[\s\()]/g)[1];
+      : target
+          .toString()
+          .trim()
+          .split(/[\s\()]/g)[1];
   }
 
-  public static isBasicType(typeName: string): boolean {
-    return [
-      Constants.BOOLEAN_TYPE,
-      Constants.NUMBER_TYPE,
-      Constants.STRING_TYPE,
-      Constants.ARRAY_TYPE
-    ].indexOf(typeName) > -1;
+  public static getTypeHash(target: any): string {
+    let res = "";
+    if (target instanceof Array) {
+      res += "Array:(";
+    } else {
+      return ReflectionUtils.getTypeName(target);
+    }
+
+    for (let i = 0; i < target.length; i++) {
+      const type = target[i];
+      if (i !== 0) res += "+";
+      if (type instanceof Array) {
+        res += this.getTypeHash(type) + ")";
+      } else {
+        res += ReflectionUtils.getTypeName(type);
+      }
+    }
+    return res + ")";
   }
 }

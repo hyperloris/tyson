@@ -1,4 +1,4 @@
-import { JsonProperty } from "../src/annotations/jsonProperty";
+import { JsonProperty, Access } from "../src/annotations/jsonProperty";
 import { Tyson } from "../src/tyson";
 
 describe("Tyson", () => {
@@ -207,6 +207,45 @@ describe("Running fromJson|toJson", () => {
         name: "Giardini Lunetta Gamberini",
         stars: 4.1,
         lastCleanup: new Date("01/01/2018").getTime()
+      }
+    );
+  });
+
+  it("on class with some properties annotated with JsonProperty(access)", () => {
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty({ access: Access.FROMJSON_ONLY })
+      population: number = undefined;
+      @JsonProperty({ access: Access.TOJSON_ONLY })
+      beautiful: boolean = undefined;
+    }
+
+    const city = new City();
+    city.name = "Bologna";
+    city.population = 388884;
+    city.beautiful = true;
+
+    const json = {
+      name: "Bologna",
+      population: 388884,
+      beautiful: true
+    };
+
+    const tyson = new Tyson();
+
+    const xcity = tyson.fromJson(json, City);
+    expect(xcity).toBeInstanceOf(City);
+    expect(xcity.name).toBe("Bologna");
+    expect(xcity.population).toBe(388884);
+    expect(xcity.beautiful).toBe(undefined);
+
+    const xjson = tyson.toJson(city);
+    expect(xjson).not.toBeInstanceOf(City);
+    expect(xjson).toEqual(
+      {
+        name: "Bologna",
+        beautiful: true
       }
     );
   });

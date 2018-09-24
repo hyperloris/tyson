@@ -1,9 +1,17 @@
 import { Constants } from "../constants";
-import { PropertyMetadata } from "./propertyMetadata";
+import { JsonPropertyMetadata } from "./jsonPropertyMetadata";
 
 export class ReflectionUtils {
-  public static getMetadata<T>(target: any, propertyKey: string): PropertyMetadata<T> {
-    return Reflect.getMetadata(Constants.JSON_PROPERTY_METADATA_KEY, target, propertyKey);
+  public static getJsonPropertyMetadata(target: any, propertyKey: string): JsonPropertyMetadata | undefined {
+    const metadata = Reflect.getMetadata(Constants.JSON_PROPERTY_METADATA_KEY, target, propertyKey);
+    if (!metadata) {
+      return undefined;
+    }
+    return new JsonPropertyMetadata(
+      metadata.name,
+      metadata.type || ReflectionUtils.getType(target, propertyKey),
+      metadata.access
+    );
   }
 
   public static getType(target: any, propertyKey: string): any {

@@ -1,5 +1,16 @@
+import { ClassType } from "../reflect/typeToken";
 import { Constants } from "../constants";
-import { PropertyMetadata } from "../reflect/propertyMetadata";
+
+export enum Access {
+  FROMJSON_ONLY = "FROMJSON_ONLY",
+  TOJSON_ONLY = "TOJSON_ONLY"
+}
+
+export interface JsonPropertyOptions {
+  name?: string;
+  type?: ClassType<any> | any[];
+  access?: Access;
+}
 
 /**
  * An annotation that indicates this property should be serialized/deserialized
@@ -18,20 +29,21 @@ import { PropertyMetadata } from "../reflect/propertyMetadata";
  * </pre>
  *
  * @export
- * @template T
- * @param {(PropertyMetadata<T> | string)} [metadata]
+ * @param {(JsonPropertyOptions | string)} [options]
  * @returns {*}
  */
-export function JsonProperty<T>(metadata?: PropertyMetadata<T> | string): any {
-  if (typeof metadata === "string") {
+export function JsonProperty(options?: JsonPropertyOptions | string): any {
+  if (typeof options === "string") {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
-      name: metadata,
-      type: undefined
+      name: options,
+      type: undefined,
+      access: undefined
     });
   } else {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
-      name: metadata ? metadata.name : undefined,
-      type: metadata ? metadata.type : undefined
+      name: options ? options.name : undefined,
+      type: options ? options.type : undefined,
+      access: options ? options.access : undefined
     });
   }
 }

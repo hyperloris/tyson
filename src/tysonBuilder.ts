@@ -14,6 +14,7 @@ import { Tyson } from "./tyson";
  * const tyson = new TysonBuilder()
  *   .registerTypeAdapter(Point, pointAdapter)
  *   .registerTypeAdapter(User, userAdapter)
+ *   .enableNullsSerialization()
  *   .build();
  * </pre>
  *

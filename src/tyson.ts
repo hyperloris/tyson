@@ -14,9 +14,10 @@ import "reflect-metadata";
  *
  * Here is an example:
  * <pre>
- * const tyson = new Tyson();
- * const myObj = tyson.fromJson(json, MyClass); // deserializes json into myObj
- * const json = tyson.toJson(myObj); // serializes myObj to json
+ * const tyson = new Tyson(); // or builder
+ * const target = new MyType();
+ * const json = tyson.toJson(target); // serializes target to JSON
+ * const target2 = tyson.fromJson(json, MyType); // deserializes JSON into target2
  * </pre>
  *
  * @export

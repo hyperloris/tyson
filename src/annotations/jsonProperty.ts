@@ -1,33 +1,96 @@
 import { ClassType } from "../reflect/typeToken";
 import { Constants } from "../constants";
 
+/**
+ * Various options for property, specifying how property 
+ * may be accessed during serialization and deserialization.
+ * 
+ * @export
+ * @enum {number}
+ */
 export enum Access {
+  /**
+   * Access setting that means that the property may only be used
+   * for deserialization: json -> class
+   */
   FROMJSON_ONLY = "FROMJSON_ONLY",
+
+  /**
+   * Access setting that means that the property may only be used
+   * for serialization: class -> json
+   */
   TOJSON_ONLY = "TOJSON_ONLY"
 }
 
+/**
+ * These are the options available for the {@link JsonProperty} annotation.
+ * 
+ * @export
+ * @interface JsonPropertyOptions
+ */
 export interface JsonPropertyOptions {
+  /**
+   * Indicates the name of the key on the JSON, this is very useful 
+   * if you need to have a different name on the class.
+   * Eg. If you mark your private property with "_"
+   */
   name?: string;
+
+  /**
+   * Specifies a type of the property.
+   * This is mandatory for arrays (single and multi-type).
+   * NOTE: if it's a Date object, you MUST specify the type!
+   */
   type?: ClassType<any> | any[];
+
+  /**
+   * It can be used to force Tyson to ignore this property during 
+   * the serialization or deserialization process.
+   */
   access?: Access;
 }
 
 /**
  * An annotation that indicates this property should be serialized/deserialized
- * following the specified name and/or type.
+ * following the specified options.
  *
  * Here is an example:
  * <pre>
- * class MyClass {
- *   @JsonProperty("name")
- *   a: string = undefined;
- *   @JsonProperty({ name: "name1", type: [Number] })
- *   b: number[] = undefined;
+ * class City {
+ *   @JsonProperty()
+ *   name: string = undefined;
+ *   @JsonProperty("_population")
+ *   population: number = undefined;
+ *   @JsonProperty({ access: Access.FROMJSON_ONLY })
+ *   beautiful: boolean = undefined;
  * }
- *
- * { "name": "value", "name1": [4, 8, 15, 16, 23, 42] } // The corresponding JSON
  * </pre>
- *
+ * 
+ * The following shows the output that is generated when serializing an instance of the
+ * above example class:
+ * <pre>
+ * const city = new City();
+ * city.name = "Bologna";
+ * city.population = 388884;
+ * city.beautiful = true;
+ * 
+ * const tyson = new Tyson();
+ * const json = tyson.toJson(city);
+ * console.log(json);
+ * 
+ * ===== OUTPUT =====
+ * { name: "Bologna", _population: 388884 }
+ * </pre>
+ * 
+ * The following shows the result of the deserialization process:
+ * <pre>
+ * const city = tyson.fromJson({ name: "Bologna", _population: 388884, beautiful: true}, City);
+ * expect(city).toBeInstanceOf(City);
+ * expect(city.name).toBe("Bologna");
+ * expect(city.population).toBe(388884);
+ * expect(city.beautiful).toBe(true);
+ * </pre>
+ * 
  * @export
  * @param {(JsonPropertyOptions | string)} [options]
  * @returns {*}

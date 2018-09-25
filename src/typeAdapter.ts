@@ -14,6 +14,17 @@
  *   }
  * }
  * </pre>
+ * 
+ * With this type adapter installed, Tyson will convert a JSON 
+ * like [44.498955, 11.327591] to a Point object and vice-versa.
+ * 
+ * To use a custom type adapter with Tyson, you must register it 
+ * with a {@link TysonBuilder}:
+ * <pre>
+ * const tyson = new TysonBuilder()
+ *   .registerTypeAdapter(Point, new PointAdapter())
+ *   .build();
+ * </pre>
  *
  * @export
  * @interface TypeAdapter

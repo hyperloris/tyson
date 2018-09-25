@@ -1,3 +1,4 @@
+import { Access } from "../annotations/jsonProperty";
 import { Constants } from "../constants";
 import { DeserializationError } from "./../exceptions/deserializationError";
 import { JsonPropertyMetadata } from "../reflect/jsonPropertyMetadata";
@@ -6,7 +7,6 @@ import { TypeAdapter } from "../typeAdapter";
 import { TypeAdapterFactory } from "../typeAdapterFactory";
 import { TypeToken, ClassType } from "../reflect/typeToken";
 import { Tyson } from "../tyson";
-import { Access } from "../annotations/jsonProperty";
 
 export class ObjectTypeAdapter extends TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {

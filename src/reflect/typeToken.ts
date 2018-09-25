@@ -4,6 +4,13 @@ export type ClassType<T> = {
   new (...args: any[]): T;
 };
 
+/**
+ * A simple container for the type
+ *
+ * @export
+ * @class TypeToken
+ * @template T
+ */
 export class TypeToken<T> {
   private _type: ClassType<T> | any[];
   private _hash: string;

@@ -19,7 +19,8 @@ export class ReflectionUtils {
     return new JsonPropertyMetadata(
       metadata.name,
       metadata.type || ReflectionUtils.getType(target, propertyKey),
-      metadata.access
+      metadata.access,
+      metadata.required
     );
   }
 

@@ -720,6 +720,32 @@ describe("Running fromJson|toJson", () => {
     expect(xcity.beautiful).toBe(undefined);
   });
 
+  it("should fail because a property is set as required, but missing on the json", () => {
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty()
+      population: number = undefined;
+      @JsonProperty({ required: true })
+      beautiful: boolean = undefined;
+    }
+
+    const json = {
+      name: "Bologna",
+      population: 388884
+    };
+
+    const tyson = new Tyson();
+
+    try {
+      tyson.fromJson(json, City);
+    } catch (err) {
+      expect(err.message).toEqual(
+        "Property 'beautiful' of City is set as required, but missing on the JSON."
+      );
+    }
+  });
+
   it("should fail because the provided class types do not match the ones in the json", () => {
     class City {
       @JsonProperty()

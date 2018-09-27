@@ -27,7 +27,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
     this._tyson = tyson;
     this._typeToken = typeToken;
     this._jsonPropertyMetadataMap = new Map();
-    this.reflect();
+    this.loadMetadata();
   }
 
   protected _fromJson(json: any): any {
@@ -39,12 +39,16 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       const innerJson = json[jsonKey];
       const typeToken = new TypeToken(metadata.type);
 
-      if (metadata.access === Access.TOJSON_ONLY) {
-        continue;
-      }
-
-      if (!json.hasOwnProperty(jsonKey)) {
-        continue;
+      // These are all blocking checks
+      const existsOnJson = json.hasOwnProperty(jsonKey);
+      if (metadata.access === Access.TOJSON_ONLY || !existsOnJson) {
+        if (!existsOnJson && metadata.required) {
+          throw new DeserializationError(
+            `Property '${objKey}' of ${obj.constructor.name} is set as required, but missing on the JSON.`
+          );
+        } else {
+          continue;
+        }
       }
 
       try {
@@ -89,7 +93,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
    * This method extracts all the metadata of the class and saves them in a map.
    * In this way the reflection operations are performed only once when the adapter is created.
    */
-  private reflect(): void {
+  private loadMetadata(): void {
     const obj = new (this._typeToken.type as ClassType<any>)();
     for (let key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getJsonPropertyMetadata(obj, key);

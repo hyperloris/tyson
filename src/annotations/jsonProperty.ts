@@ -48,6 +48,14 @@ export interface JsonPropertyOptions {
    * the serialization or deserialization process.
    */
   access?: Access;
+
+  /**
+   * Property that indicates whether a value is expected for property 
+   * during deserialization or not. If the value is missing on the JSON, 
+   * an exception is thrown.
+   * Default value: false
+   */
+  required?: boolean;
 }
 
 /**
@@ -100,13 +108,15 @@ export function JsonProperty(options?: JsonPropertyOptions | string): any {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
       name: options,
       type: undefined,
-      access: undefined
+      access: undefined,
+      required: undefined
     });
   } else {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
       name: options ? options.name : undefined,
       type: options ? options.type : undefined,
-      access: options ? options.access : undefined
+      access: options ? options.access : undefined,
+      required: options ? options.required : undefined
     });
   }
 }

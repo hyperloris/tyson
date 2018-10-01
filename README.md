@@ -24,8 +24,10 @@
 ## Features
 
 * Simple `toJson()` and `fromJson()` methods for conversions
-* Different names between json and class properties
-* Custom conversions
+* Many options on the property (e.g. custom naming, required and more)
+* Type-safe JSON deserialization
+* Support for multi-type arrays
+* Custom conversions through adapters and factories
 
 ## Installation
 
@@ -41,8 +43,9 @@ The primary class to use is [`Tyson`](https://hyperloris.github.io/tyson/classes
 
 ### Requirements
 
-There are two requirements to be met in order to make the library work properly:
+There are three requirements to be met in order to make the library work properly:
 
+* Set experimentalDecorators and emitDecoratorMetadata to true on your `tsconfig.json` file
 * Properties need to be preceded by the [`@JsonProperty`](https://hyperloris.github.io/tyson/globals.html#jsonproperty) annotation
 * Properties need to have a default value (e.g. `undefined`)
 

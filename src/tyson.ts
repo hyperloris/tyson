@@ -8,6 +8,11 @@ import { TypeToken, ClassType } from "./reflect/typeToken";
 import { TysonBuilder } from "./tysonBuilder";
 import "reflect-metadata";
 
+export * from "./annotations/jsonProperty";
+export * from "./typeAdapter";
+export * from "./typeAdapterFactory";
+export * from "./tysonBuilder";
+
 /**
  * This is the main class. Tyson is typically used by first constructing a
  * Tyson instance and then invoking toJson or fromJson methods on it.

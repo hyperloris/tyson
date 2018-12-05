@@ -6,6 +6,7 @@ export class JsonPropertyMetadata {
     public name: string,
     public type: ClassType<any> | any[],
     public access: Access,
-    public required: boolean
+    public required: boolean,
+    public ignoreType: boolean
   ) {}
 }

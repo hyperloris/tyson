@@ -20,7 +20,8 @@ export class ReflectionUtils {
       metadata.name,
       metadata.type || ReflectionUtils.getType(target, propertyKey),
       metadata.access,
-      metadata.required
+      metadata.required,
+      metadata.ignoreType
     );
   }
 
@@ -65,7 +66,7 @@ export class ReflectionUtils {
    * [String, [Number, User], [User]] -> Array:(String+Array:(Number+User))+Array:(User)))
    *
    * This format is very helpful for debugging purposes.
-   * 
+   *
    * @static
    * @param {*} target the target object
    * @returns the generated hash of the target

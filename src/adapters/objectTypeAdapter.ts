@@ -52,7 +52,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       }
 
       try {
-        obj[objKey] = this._tyson.getAdapter(typeToken).fromJson(innerJson);
+        obj[objKey] = metadata.ignoreType ? innerJson : this._tyson.getAdapter(typeToken).fromJson(innerJson);
       } catch (err) {
         if (err instanceof DeserializationError) {
           throw new DeserializationError(
@@ -75,7 +75,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       if (metadata && metadata.access !== Access.FROMJSON_ONLY) {
         const jsonKey = metadata.name || key;
         const typeToken = new TypeToken(metadata.type);
-        const value = this._tyson.getAdapter(typeToken).toJson(src[key]);
+        const value = metadata.ignoreType ? src[key] : this._tyson.getAdapter(typeToken).toJson(src[key]);
 
         // The default behavior is to ignore properties with a null or undefined values,
         // unless it is set differently with the builder.

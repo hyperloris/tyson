@@ -746,6 +746,57 @@ describe("Running fromJson|toJson", () => {
     }
   });
 
+  it("should ignore the type of some properties during conversions", () => {
+    class User {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty({ type: Date })
+      birthdate: Date = undefined;
+    }
+
+    class City {
+      @JsonProperty()
+      name: string = undefined;
+      @JsonProperty({ ignoreType: true })
+      population: number = undefined;
+      @JsonProperty({ ignoreType: true })
+      mayor: User = undefined;
+    }
+
+    const json = {
+      name: "Bologna",
+      population: "388884",
+      mayor: {
+        name: "Virginio Merola",
+        birthdate: "02/14/1955"
+      }
+    };
+
+    const tyson = new Tyson();
+
+    const xcity = tyson.fromJson(json, City);
+    expect(xcity).toBeInstanceOf(City);
+    expect(xcity.name).toBe("Bologna");
+    expect(xcity.population).toBe("388884");
+    expect(xcity.mayor).not.toBeInstanceOf(User);
+    expect(xcity.mayor.name).toBe("Virginio Merola");
+    expect(xcity.mayor.birthdate).not.toBeInstanceOf(Date);
+    expect(xcity.mayor.birthdate).toBe("02/14/1955");
+
+    const xjson = tyson.toJson(xcity);
+    expect(xjson).not.toBeInstanceOf(City);
+    expect(xjson).toEqual(
+      {
+        name: "Bologna",
+        population: "388884",
+        mayor: {
+          name: "Virginio Merola",
+          birthdate: "02/14/1955"
+        }
+      }
+    );
+  });
+
   it("should fail because the provided class types do not match the ones in the json", () => {
     class City {
       @JsonProperty()

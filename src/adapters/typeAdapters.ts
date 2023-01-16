@@ -1,9 +1,9 @@
-import { Constants } from "../constants";
-import { DeserializationError } from "./../exceptions/deserializationError";
-import { TypeAdapter } from "../typeAdapter";
-import { TypeAdapterFactory } from "../typeAdapterFactory";
-import { TypeToken, ClassType } from "../reflect/typeToken";
-import { Tyson } from "../tyson";
+import { Constants } from '../constants';
+import { ClassType, TypeToken } from '../reflect/typeToken';
+import { TypeAdapter } from '../typeAdapter';
+import { TypeAdapterFactory } from '../typeAdapterFactory';
+import { Tyson } from '../tyson';
+import { DeserializationError } from './../exceptions/deserializationError';
 
 class BOOLEAN extends TypeAdapter<boolean> {
   protected _fromJson(json: any): boolean {
@@ -62,8 +62,8 @@ export class TypeAdapters {
     }
     return {
       create<T>(tyson: Tyson, typeToken: TypeToken<T>): TypeAdapter<T> | undefined {
-        return typeToken.hash === (type as TypeToken<TT>).hash ? typeAdapter as any : undefined;
-      }
+        return typeToken.hash === (type as TypeToken<TT>).hash ? (typeAdapter as any) : undefined;
+      },
     };
   }
 }

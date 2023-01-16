@@ -1,12 +1,12 @@
-import { Access } from "../annotations/jsonProperty";
-import { Constants } from "../constants";
-import { DeserializationError } from "./../exceptions/deserializationError";
-import { JsonPropertyMetadata } from "../reflect/jsonPropertyMetadata";
-import { ReflectionUtils } from "../reflect/reflectionUtils";
-import { TypeAdapter } from "../typeAdapter";
-import { TypeAdapterFactory } from "../typeAdapterFactory";
-import { TypeToken, ClassType } from "../reflect/typeToken";
-import { Tyson } from "../tyson";
+import { Access } from '../annotations/jsonProperty';
+import { Constants } from '../constants';
+import { JsonPropertyMetadata } from '../reflect/jsonPropertyMetadata';
+import { ReflectionUtils } from '../reflect/reflectionUtils';
+import { ClassType, TypeToken } from '../reflect/typeToken';
+import { TypeAdapter } from '../typeAdapter';
+import { TypeAdapterFactory } from '../typeAdapterFactory';
+import { Tyson } from '../tyson';
+import { DeserializationError } from './../exceptions/deserializationError';
 
 export class ObjectTypeAdapter extends TypeAdapter<any> {
   static readonly FACTORY: TypeAdapterFactory = {
@@ -15,7 +15,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
         return new ObjectTypeAdapter(tyson, typeToken);
       }
       return undefined;
-    }
+    },
   };
 
   private _tyson: Tyson;
@@ -32,7 +32,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
 
   protected _fromJson(json: any): any {
     const obj = new (this._typeToken.type as ClassType<any>)();
-    for (let entry of Array.from(this._jsonPropertyMetadataMap.entries())) {
+    for (const entry of Array.from(this._jsonPropertyMetadataMap.entries())) {
       const objKey = entry[0];
       const metadata = entry[1];
       const jsonKey = metadata.name || objKey;
@@ -44,7 +44,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       if (metadata.access === Access.TOJSON_ONLY || !existsOnJson) {
         if (!existsOnJson && metadata.required) {
           throw new DeserializationError(
-            `Property '${objKey}' of ${obj.constructor.name} is set as required, but missing on the JSON.`
+            `Property '${objKey}' of ${obj.constructor.name} is set as required, but missing on the JSON.`,
           );
         } else {
           continue;
@@ -57,7 +57,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
         if (err instanceof DeserializationError) {
           throw new DeserializationError(
             `Property '${objKey}' of ${obj.constructor.name} does not match type of '${jsonKey}'.`,
-            json
+            json,
           );
         } else {
           throw err;
@@ -69,7 +69,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
 
   protected _toJson(src: any): any {
     const obj: any = {};
-    for (let key in src) {
+    for (const key in src) {
       const metadata = this._jsonPropertyMetadataMap.get(key);
 
       if (metadata && metadata.access !== Access.FROMJSON_ONLY) {
@@ -95,7 +95,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
    */
   private loadMetadata(): void {
     const obj = new (this._typeToken.type as ClassType<any>)();
-    for (let key of Object.keys(obj)) {
+    for (const key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getJsonPropertyMetadata(obj, key);
       if (!metadata) {
         continue;

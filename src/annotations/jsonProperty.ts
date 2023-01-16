@@ -1,5 +1,5 @@
-import { ClassType } from "../reflect/typeToken";
-import { Constants } from "../constants";
+import { Constants } from '../constants';
+import { ClassType } from '../reflect/typeToken';
 
 /**
  * Various options for property, specifying how property
@@ -13,13 +13,13 @@ export enum Access {
    * Access setting that means that the property may only be used
    * for deserialization: json -> class
    */
-  FROMJSON_ONLY = "FROMJSON_ONLY",
+  FROMJSON_ONLY = 'FROMJSON_ONLY',
 
   /**
    * Access setting that means that the property may only be used
    * for serialization: class -> json
    */
-  TOJSON_ONLY = "TOJSON_ONLY"
+  TOJSON_ONLY = 'TOJSON_ONLY',
 }
 
 /**
@@ -113,13 +113,13 @@ export interface JsonPropertyOptions {
  * @returns {*}
  */
 export function JsonProperty(options?: JsonPropertyOptions | string): any {
-  if (typeof options === "string") {
+  if (typeof options === 'string') {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
       name: options,
       type: undefined,
       access: undefined,
       required: undefined,
-      ignoreType: undefined
+      ignoreType: undefined,
     });
   } else {
     return Reflect.metadata(Constants.JSON_PROPERTY_METADATA_KEY, {
@@ -127,7 +127,7 @@ export function JsonProperty(options?: JsonPropertyOptions | string): any {
       type: options ? options.type : undefined,
       access: options ? options.access : undefined,
       required: options ? options.required : undefined,
-      ignoreType: options ? options.ignoreType : undefined
+      ignoreType: options ? options.ignoreType : undefined,
     });
   }
 }

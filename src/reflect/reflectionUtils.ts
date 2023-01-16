@@ -1,5 +1,5 @@
-import { Constants } from "../constants";
-import { JsonPropertyMetadata } from "./jsonPropertyMetadata";
+import { Constants } from '../constants';
+import { JsonPropertyMetadata } from './jsonPropertyMetadata';
 
 export class ReflectionUtils {
   /**
@@ -21,7 +21,7 @@ export class ReflectionUtils {
       metadata.type || ReflectionUtils.getType(target, propertyKey),
       metadata.access,
       metadata.required,
-      metadata.ignoreType
+      metadata.ignoreType,
     );
   }
 
@@ -35,7 +35,7 @@ export class ReflectionUtils {
    * @memberof ReflectionUtils
    */
   public static getType(target: any, propertyKey: string): any {
-    return Reflect.getMetadata("design:type", target, propertyKey);
+    return Reflect.getMetadata('design:type', target, propertyKey);
   }
 
   /**
@@ -73,22 +73,22 @@ export class ReflectionUtils {
    * @memberof ReflectionUtils
    */
   public static getTypeHash(target: any): string {
-    let res = "";
+    let res = '';
     if (target instanceof Array) {
-      res += "Array:(";
+      res += 'Array:(';
     } else {
       return ReflectionUtils.getTypeName(target);
     }
 
     for (let i = 0; i < target.length; i++) {
       const type = target[i];
-      if (i !== 0) res += "+";
+      if (i !== 0) res += '+';
       if (type instanceof Array) {
-        res += this.getTypeHash(type) + ")";
+        res += this.getTypeHash(type) + ')';
       } else {
         res += ReflectionUtils.getTypeName(type);
       }
     }
-    return res + ")";
+    return res + ')';
   }
 }

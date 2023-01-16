@@ -1,9 +1,9 @@
-import { Constants } from "./constants";
-import { TypeAdapter } from "./typeAdapter";
-import { TypeAdapterFactory } from "./typeAdapterFactory";
-import { TypeAdapters } from "./adapters/typeAdapters";
-import { TypeToken, ClassType } from "./reflect/typeToken";
-import { Tyson } from "./tyson";
+import { TypeAdapters } from './adapters/typeAdapters';
+import { Constants } from './constants';
+import { ClassType, TypeToken } from './reflect/typeToken';
+import { TypeAdapter } from './typeAdapter';
+import { TypeAdapterFactory } from './typeAdapterFactory';
+import { Tyson } from './tyson';
 
 /**
  * Use this builder to construct a Tyson instance when you need to set configuration
@@ -26,7 +26,7 @@ export class TysonBuilder {
   private _serializeNulls = Constants.DEFAULT_SERIALIZE_NULLS;
 
   constructor() {
-    this._factories = new Array();
+    this._factories = [];
   }
 
   public get factories() {

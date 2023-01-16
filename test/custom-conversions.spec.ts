@@ -1,9 +1,9 @@
-import { JsonProperty } from "../src/annotations/jsonProperty";
-import { TypeAdapter } from "../src/typeAdapter";
-import { TysonBuilder } from "../src/tysonBuilder";
+import { JsonProperty } from '../src/annotations/jsonProperty';
+import { TypeAdapter } from '../src/typeAdapter';
+import { TysonBuilder } from '../src/tysonBuilder';
 
-describe("Testing Tyson with different builder configurations", () => {
-  it("should convert the Point object according to the custom registered adapter", () => {
+describe('Testing Tyson with different builder configurations', () => {
+  it('should convert the Point object according to the custom registered adapter', () => {
     class Point {
       lat: number = undefined;
       lon: number = undefined;
@@ -12,19 +12,19 @@ describe("Testing Tyson with different builder configurations", () => {
     class City {
       @JsonProperty()
       name: string = undefined;
-      @JsonProperty("coords")
+      @JsonProperty('coords')
       point: Point = undefined;
     }
 
     const city = new City();
-    city.name = "Bologna";
+    city.name = 'Bologna';
     city.point = new Point();
     city.point.lat = 44.498955;
     city.point.lon = 11.327591;
 
     const json = {
-      name: "Bologna",
-      coords: [44.498955, 11.327591]
+      name: 'Bologna',
+      coords: [44.498955, 11.327591],
     };
 
     class PointAdapter extends TypeAdapter<Point> {
@@ -39,9 +39,7 @@ describe("Testing Tyson with different builder configurations", () => {
       }
     }
 
-    const tyson = new TysonBuilder()
-      .registerTypeAdapter(Point, new PointAdapter())
-      .build();
+    const tyson = new TysonBuilder().registerTypeAdapter(Point, new PointAdapter()).build();
 
     const xcity = tyson.fromJson(json, City);
     expect(xcity).toBeInstanceOf(City);
@@ -51,15 +49,13 @@ describe("Testing Tyson with different builder configurations", () => {
 
     const xjson = tyson.toJson(city);
     expect(xjson).not.toBeInstanceOf(City);
-    expect(xjson).toEqual(
-      {
-        name: "Bologna",
-        coords: [44.498955, 11.327591]
-      }
-    );
+    expect(xjson).toEqual({
+      name: 'Bologna',
+      coords: [44.498955, 11.327591],
+    });
   });
 
-  it("should serialize nulls", () => {
+  it('should serialize nulls', () => {
     class City {
       @JsonProperty()
       name: string = undefined;
@@ -72,22 +68,18 @@ describe("Testing Tyson with different builder configurations", () => {
     }
 
     const city = new City();
-    city.name = "Bologna";
-    city.fractions = ["Barbiano", undefined, "Borgo Panigale", null];
+    city.name = 'Bologna';
+    city.fractions = ['Barbiano', undefined, 'Borgo Panigale', null];
 
-    const tyson = new TysonBuilder()
-      .enableNullsSerialization()
-      .build();
+    const tyson = new TysonBuilder().enableNullsSerialization().build();
 
     const xcity = tyson.toJson(city);
     expect(xcity).not.toBeInstanceOf(City);
-    expect(xcity).toEqual(
-      {
-        name: "Bologna",
-        population: null,
-        beautiful: null,
-        fractions: ["Barbiano", null, "Borgo Panigale", null]
-      }
-    );
+    expect(xcity).toEqual({
+      name: 'Bologna',
+      population: null,
+      beautiful: null,
+      fractions: ['Barbiano', null, 'Borgo Panigale', null],
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { ReflectionUtils } from "./reflectionUtils";
+import { ReflectionUtils } from './reflectionUtils';
 
 export type ClassType<T> = {
   new (...args: any[]): T;

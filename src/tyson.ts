@@ -1,17 +1,13 @@
-import { ArrayTypeAdapter } from "./adapters/arrayTypeAdapter";
-import { Constants } from "./constants";
-import { ObjectTypeAdapter } from "./adapters/objectTypeAdapter";
-import { TypeAdapter } from "./typeAdapter";
-import { TypeAdapterFactory } from "./typeAdapterFactory";
-import { TypeAdapters } from "./adapters/typeAdapters";
-import { TypeToken, ClassType } from "./reflect/typeToken";
-import { TysonBuilder } from "./tysonBuilder";
-import "reflect-metadata";
+import 'reflect-metadata';
 
-export * from "./annotations/jsonProperty";
-export * from "./typeAdapter";
-export * from "./typeAdapterFactory";
-export * from "./tysonBuilder";
+import { ArrayTypeAdapter } from './adapters/arrayTypeAdapter';
+import { ObjectTypeAdapter } from './adapters/objectTypeAdapter';
+import { TypeAdapters } from './adapters/typeAdapters';
+import { Constants } from './constants';
+import { ClassType, TypeToken } from './reflect/typeToken';
+import { TypeAdapter } from './typeAdapter';
+import { TypeAdapterFactory } from './typeAdapterFactory';
+import { TysonBuilder } from './tysonBuilder';
 
 /**
  * This is the main class. Tyson is typically used by first constructing a
@@ -40,7 +36,7 @@ export class Tyson {
    * @memberof Tyson
    */
   constructor(builder?: TysonBuilder) {
-    this._factories = new Array();
+    this._factories = [];
     this._typeTokenCache = new Map();
 
     // Users' configs
@@ -117,13 +113,13 @@ export class Tyson {
       return cached;
     }
 
-    for (let factory of this._factories) {
+    for (const factory of this._factories) {
       const candidate = factory.create(this, typeToken);
       if (candidate !== undefined) {
         this._typeTokenCache.set(typeToken.hash, candidate);
         return candidate;
       }
     }
-    throw new Error("Tyson cannot handle " + typeToken.hash);
+    throw new Error('Tyson cannot handle ' + typeToken.hash);
   }
 }

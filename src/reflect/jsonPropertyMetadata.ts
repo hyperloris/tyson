@@ -1,5 +1,5 @@
-import { Access } from "../annotations/jsonProperty";
-import { ClassType } from "./typeToken";
+import { Access } from '../annotations/jsonProperty';
+import { ClassType } from './typeToken';
 
 export class JsonPropertyMetadata {
   constructor(
@@ -7,6 +7,6 @@ export class JsonPropertyMetadata {
     public type: ClassType<any> | any[],
     public access: Access,
     public required: boolean,
-    public ignoreType: boolean
+    public ignoreType: boolean,
   ) {}
 }

@@ -31,21 +31,21 @@
  * @template T
  */
 export abstract class TypeAdapter<T> {
-  public fromJson(json: any): T | T[] | undefined {
+  public fromPlain(json: any): T | T[] | undefined {
     if (json === null) {
       return undefined;
     }
-    return this._fromJson(json);
+    return this._fromPlain(json);
   }
 
-  public toJson(src: T): any {
+  public toPlain(src: T): any {
     if (src === null || src === undefined) {
       return null;
     } else {
-      return this._toJson(src);
+      return this._toPlain(src);
     }
   }
 
-  protected abstract _fromJson(json: any): T | T[];
-  protected abstract _toJson(src: T): any;
+  protected abstract _fromPlain(json: any): T | T[];
+  protected abstract _toPlain(src: T): any;
 }

@@ -1,5 +1,5 @@
 import { Constants } from '../constants';
-import { ClassType } from '../reflect/typeToken';
+import { Type } from '../interfaces';
 
 /**
  * Various options for property, specifying how property
@@ -41,7 +41,7 @@ export interface JsonPropertyOptions {
    * This is mandatory for arrays (single and multi-type).
    * NOTE: if it's a Date object, you MUST specify the type!
    */
-  type?: ClassType<any> | any[];
+  type?: Type<any> | any[];
 
   /**
    * It can be used to force Tyson to ignore this property during

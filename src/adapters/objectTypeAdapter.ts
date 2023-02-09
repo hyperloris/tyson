@@ -1,8 +1,9 @@
 import { Access } from '../annotations/jsonProperty';
 import { Constants } from '../constants';
+import { Type } from '../interfaces';
 import { JsonPropertyMetadata } from '../reflect/jsonPropertyMetadata';
 import { ReflectionUtils } from '../reflect/reflectionUtils';
-import { ClassType, TypeToken } from '../reflect/typeToken';
+import { TypeToken } from '../reflect/typeToken';
 import { TypeAdapter } from '../typeAdapter';
 import { TypeAdapterFactory } from '../typeAdapterFactory';
 import { Tyson } from '../tyson';
@@ -30,8 +31,8 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
     this.loadMetadata();
   }
 
-  protected _fromJson(json: any): any {
-    const obj = new (this._typeToken.type as ClassType<any>)();
+  protected _fromPlain(json: any): any {
+    const obj = new (this._typeToken.type as Type<any>)();
     for (const entry of Array.from(this._jsonPropertyMetadataMap.entries())) {
       const objKey = entry[0];
       const metadata = entry[1];
@@ -52,7 +53,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       }
 
       try {
-        obj[objKey] = metadata.ignoreType ? innerJson : this._tyson.getAdapter(typeToken).fromJson(innerJson);
+        obj[objKey] = metadata.ignoreType ? innerJson : this._tyson.getAdapter(typeToken).fromPlain(innerJson);
       } catch (err) {
         if (err instanceof DeserializationError) {
           throw new DeserializationError(
@@ -67,7 +68,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
     return obj;
   }
 
-  protected _toJson(src: any): any {
+  protected _toPlain(src: any): any {
     const obj: any = {};
     for (const key in src) {
       const metadata = this._jsonPropertyMetadataMap.get(key);
@@ -75,7 +76,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
       if (metadata && metadata.access !== Access.FROMJSON_ONLY) {
         const jsonKey = metadata.name || key;
         const typeToken = new TypeToken(metadata.type);
-        const value = metadata.ignoreType ? src[key] : this._tyson.getAdapter(typeToken).toJson(src[key]);
+        const value = metadata.ignoreType ? src[key] : this._tyson.getAdapter(typeToken).toPlain(src[key]);
 
         // The default behavior is to ignore properties with a null or undefined values,
         // unless it is set differently with the builder.
@@ -94,7 +95,7 @@ export class ObjectTypeAdapter extends TypeAdapter<any> {
    * In this way the reflection operations are performed only once when the adapter is created.
    */
   private loadMetadata(): void {
-    const obj = new (this._typeToken.type as ClassType<any>)();
+    const obj = new (this._typeToken.type as Type<any>)();
     for (const key of Object.keys(obj)) {
       const metadata = ReflectionUtils.getJsonPropertyMetadata(obj, key);
       if (!metadata) {

@@ -7,7 +7,7 @@ describe('Tyson', () => {
   });
 });
 
-describe('Running fromJson|toJson', () => {
+describe('Running fromPlain|toPlain', () => {
   it('on class with no annotations', () => {
     class City {
       name: string = undefined;
@@ -28,13 +28,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe(undefined);
     expect(xcity.population).toBe(undefined);
     expect(xcity.beautiful).toBe(undefined);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({});
   });
@@ -74,13 +74,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe(undefined);
     expect(xcity.population).toBe(undefined);
     expect(xcity.isBeautiful()).toBe(undefined);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({});
   });
@@ -112,12 +112,12 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.beautiful).toBe(true);
     expect(xcity.getDescription()).toBe('Bologna has 388884 inhabitants.');
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       name: 'Bologna',
@@ -153,12 +153,12 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.beautiful).toBe(true);
     expect(xcity.getDescription()).toBe('Bologna has 388884 inhabitants.');
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       nam: 'Bologna',
@@ -190,13 +190,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xpark = tyson.fromJson(json, Park);
+    const xpark = tyson.fromPlain(json, Park);
     expect(xpark).toBeInstanceOf(Park);
     expect(xpark.name).toBe('Giardini Lunetta Gamberini');
     expect(xpark.rating).toBe(4.1);
     expect(xpark.lastCleanup.getTime()).toBe(new Date('01/01/2018').getTime());
 
-    const xjson = tyson.toJson(park);
+    const xjson = tyson.toPlain(park);
     expect(xjson).not.toBeInstanceOf(Park);
     expect(xjson).toEqual({
       name: 'Giardini Lunetta Gamberini',
@@ -228,13 +228,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe('Bologna');
     expect(xcity.population).toBe(388884);
     expect(xcity.beautiful).toBe(undefined);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       name: 'Bologna',
@@ -265,13 +265,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.fractions[0]).toBe('Barbiano');
     expect(xcity.temperatures[4]).toBe(34.9);
     expect(xcity.tdays[6]).toBe(true);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       _fractions: ['Barbiano', 'Bertalìa', 'Borgo Panigale'],
@@ -315,7 +315,7 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe('Bologna');
     expect(xcity.wards).toHaveLength(3);
@@ -324,7 +324,7 @@ describe('Running fromJson|toJson', () => {
     expect(xcity.mayor.id).toBe(35);
     expect(xcity.mayor.name).toBe('Virginio Merola');
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       _name: 'Bologna',
@@ -387,13 +387,13 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.mayors).toHaveLength(3);
     expect(xcity.mayors[2]).toBeInstanceOf(User);
     expect(xcity.mayors[2].id).toBe(23);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       _name: 'Bologna',
@@ -471,7 +471,7 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.territory).toHaveLength(3);
     expect(xcity.territory[0]).toBe(44.498955);
@@ -484,7 +484,7 @@ describe('Running fromJson|toJson', () => {
     expect(xcity.information[2]).toHaveLength(2);
     expect(xcity.information[2][1].name).toBe('Sergio Cofferati');
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       territory: [44.498955, 11.327591, false],
@@ -622,7 +622,7 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcities = tyson.fromJson(json, City);
+    const xcities = tyson.fromPlain(json, City);
     expect(xcities).toHaveLength(3);
     expect(xcities[0]).toBeInstanceOf(City);
     expect(xcities[0].fractions).toHaveLength(3);
@@ -633,7 +633,7 @@ describe('Running fromJson|toJson', () => {
     expect(xcities[2].mayor).toBeInstanceOf(User);
     expect(xcities[2].mayor.birthdate.getTime()).toBe(new Date('07/18/1978').getTime());
 
-    const xjson = tyson.toJson([city1, city2, city3], [City]);
+    const xjson = tyson.toPlain([city1, city2, city3], City);
     expect(xjson).toHaveLength(3);
     expect(xjson).toEqual([
       {
@@ -687,7 +687,7 @@ describe('Running fromJson|toJson', () => {
       description: 'The capital of the Emilia-Romagna',
     };
 
-    const xcity = new Tyson().fromJson(json, City);
+    const xcity = new Tyson().fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe('Bologna');
     expect(xcity.population).toBe(undefined);
@@ -712,7 +712,7 @@ describe('Running fromJson|toJson', () => {
     const tyson = new Tyson();
 
     try {
-      tyson.fromJson(json, City);
+      tyson.fromPlain(json, City);
     } catch (err) {
       expect(err.message).toEqual("Property 'beautiful' of City is set as required, but missing on the JSON.");
     }
@@ -746,7 +746,7 @@ describe('Running fromJson|toJson', () => {
 
     const tyson = new Tyson();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.name).toBe('Bologna');
     expect(xcity.population).toBe('388884');
@@ -755,7 +755,7 @@ describe('Running fromJson|toJson', () => {
     expect(xcity.mayor.birthdate).not.toBeInstanceOf(Date);
     expect(xcity.mayor.birthdate).toBe('02/14/1955');
 
-    const xjson = tyson.toJson(xcity);
+    const xjson = tyson.toPlain(xcity);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       name: 'Bologna',
@@ -798,17 +798,17 @@ describe('Running fromJson|toJson', () => {
     const tyson = new Tyson();
 
     try {
-      tyson.fromJson(json1, City);
+      tyson.fromPlain(json1, City);
     } catch (err) {
       expect(err.message).toEqual("Property 'name' of City does not match type of 'name'.");
     }
     try {
-      tyson.fromJson(json2, City);
+      tyson.fromPlain(json2, City);
     } catch (err) {
       expect(err.message).toEqual("Property 'population' of City does not match type of 'population'.");
     }
     try {
-      tyson.fromJson(json3, City);
+      tyson.fromPlain(json3, City);
     } catch (err) {
       expect(err.message).toEqual("Property 'beautiful' of City does not match type of 'beautiful'.");
     }
@@ -836,7 +836,7 @@ describe('Running fromJson|toJson', () => {
       fractions: ['Barbiano', null, 'Borgo Panigale'],
     };
 
-    const xcity = new Tyson().fromJson(json, City);
+    const xcity = new Tyson().fromPlain(json, City);
     expect(xcity.name).toBe('Bologna');
     expect(xcity.population).toBe(undefined);
     expect(xcity.beautiful).toBe(true);
@@ -861,7 +861,7 @@ describe('Running fromJson|toJson', () => {
     city.name = 'Bologna';
     city.fractions = ['Barbiano', undefined, 'Borgo Panigale', null];
 
-    const xjson = new Tyson().toJson(city);
+    const xjson = new Tyson().toPlain(city);
     expect(xjson).toEqual({
       name: 'Bologna',
       fractions: ['Barbiano', null, 'Borgo Panigale', null],

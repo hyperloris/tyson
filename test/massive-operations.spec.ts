@@ -58,7 +58,7 @@ describe('Testing Tyson against huge datasets', () => {
 
     const tyson = new Tyson();
 
-    const xroot = tyson.fromJson(json, Root);
+    const xroot = tyson.fromPlain(json, Root);
     expect(xroot.a).toHaveLength(1000);
     expect(xroot.b).toHaveLength(1000);
     expect(xroot.cC).toHaveLength(1000);

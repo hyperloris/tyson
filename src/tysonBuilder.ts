@@ -1,6 +1,7 @@
 import { TypeAdapters } from './adapters/typeAdapters';
 import { Constants } from './constants';
-import { ClassType, TypeToken } from './reflect/typeToken';
+import { Type } from './interfaces';
+import { TypeToken } from './reflect/typeToken';
 import { TypeAdapter } from './typeAdapter';
 import { TypeAdapterFactory } from './typeAdapterFactory';
 import { Tyson } from './tyson';
@@ -44,12 +45,12 @@ export class TysonBuilder {
    * it is overwritten (even the built-in).
    *
    * @template T
-   * @param {ClassType<T>} type the type for the type adapter being registered
+   * @param {Type<T>} type the type for the type adapter being registered
    * @param {TypeAdapter<T>} typeAdapter
    * @returns {TysonBuilder} a reference to this TysonBuilder
    * @memberof TysonBuilder
    */
-  public registerTypeAdapter<T>(type: ClassType<T>, typeAdapter: TypeAdapter<T>): TysonBuilder {
+  public registerTypeAdapter<T>(type: Type<T>, typeAdapter: TypeAdapter<T>): TysonBuilder {
     this._factories.push(TypeAdapters.newFactory(new TypeToken(type), typeAdapter));
     return this;
   }

@@ -22,11 +22,11 @@ export class ArrayTypeAdapter extends TypeAdapter<any> {
     this._typeToken = typeToken;
   }
 
-  protected _fromJson(json: any): any[] {
+  protected _fromPlain(json: any): any[] {
     return this.convertSingleOrMultiTypeArray(true, json);
   }
 
-  protected _toJson(src: any): any[] {
+  protected _toPlain(src: any): any[] {
     return this.convertSingleOrMultiTypeArray(false, src);
   }
 
@@ -36,12 +36,12 @@ export class ArrayTypeAdapter extends TypeAdapter<any> {
     if (types.length === 1) {
       const adapter = this._tyson.getAdapter(new TypeToken(types[0]));
       for (const value of inArray) {
-        array.push(isFrom ? adapter.fromJson(value) : adapter.toJson(value));
+        array.push(isFrom ? adapter.fromPlain(value) : adapter.toPlain(value));
       }
     } else {
       for (const i in types) {
         const adapter = this._tyson.getAdapter(new TypeToken(types[i]));
-        array.push(isFrom ? adapter.fromJson(inArray[i]) : adapter.toJson(inArray[i]));
+        array.push(isFrom ? adapter.fromPlain(inArray[i]) : adapter.toPlain(inArray[i]));
       }
     }
     return array;

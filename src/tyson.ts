@@ -4,7 +4,8 @@ import { ArrayTypeAdapter } from './adapters/arrayTypeAdapter';
 import { ObjectTypeAdapter } from './adapters/objectTypeAdapter';
 import { TypeAdapters } from './adapters/typeAdapters';
 import { Constants } from './constants';
-import { ClassType, TypeToken } from './reflect/typeToken';
+import { Plain, Type } from './interfaces';
+import { TypeToken } from './reflect/typeToken';
 import { TypeAdapter } from './typeAdapter';
 import { TypeAdapterFactory } from './typeAdapterFactory';
 import { TysonBuilder } from './tysonBuilder';
@@ -59,41 +60,74 @@ export class Tyson {
   }
 
   /**
-   * This method deserializes the specified JSON into an object|array of the specified type.
+   * Converts a plain (literal) object into a class instance.
+   * This method also works with arrays.
    *
-   * @template T the type of the desired object|array
-   * @param json the JSON object|array used during deserialization
-   * @param type a class|array of T
-   * @returns an object|array of type T. Returns undefined if json or type are undefined.
-   * @memberof Tyson
+   * @param plain - The plain object or array to convert
+   * @param type - The constructor function of the target class
+   * @returns The converted instance(s) of the target class
    */
-  public fromJson<T>(json: any[], type: any[]): any[];
-  public fromJson<T>(json: any[], type: ClassType<T>): T[];
-  public fromJson<T>(json: object, type: ClassType<T>): T;
-  public fromJson<T>(json: any[] | object, type: any[] | ClassType<T>): any[] | T[] | T | undefined {
-    // If we are in the second case (any[] and ClassType),
-    // we need to wrap the type into an array, in order to start
-    // with the correct adapter. This allows us to keep the API cleaner.
-    if (json instanceof Array && !(type instanceof Array)) {
-      type = [type];
-    }
-
-    return this.getAdapter(new TypeToken(type)).fromJson(json);
+  public fromPlain<T>(plain: Plain[], type: Type<T>): T[];
+  public fromPlain<T>(plain: Plain, type: Type<T>): T;
+  public fromPlain<T>(plain: Plain, type: Type<T>): T | T[] | undefined {
+    const targetType = Array.isArray(plain) ? [type] : type;
+    const typeToken = new TypeToken(targetType);
+    return this.getAdapter(typeToken).fromPlain(plain);
   }
 
   /**
-   * This method serializes the specified object, into its equivalent JSON representation.
+   * Converts a class instance to a plain (literal) object.
+   * This method also works with arrays.
    *
-   * @param src the object|array for which JSON representation is to be created
-   * @param type the specific type of src (required for arrays)
-   * @returns JSON representation of src
-   * @memberof Tyson
+   * @param src - The class instance(s) to convert
+   * @param type - The constructor function of the target class.
+   * If not specified, the type will be determined from the `src` parameter.
+   * @returns The converted plain object or array
    */
-  public toJson(src: any[], type: ClassType<any> | any[]): any[];
-  public toJson(src: object, type?: ClassType<any>): any;
-  public toJson(src: any[] | object, type?: ClassType<any> | any[]): any[] | any {
-    const typeToken = new TypeToken(type || (src as any).constructor);
-    return this.getAdapter(typeToken).toJson(src);
+  public toPlain(src: unknown[], type?: Type): Plain[];
+  public toPlain(src: unknown, type?: Type): Plain;
+  public toPlain(src: unknown, type?: Type): Plain {
+    const targetType = type || (src as any).constructor;
+    const typeToken = new TypeToken(targetType);
+    return this.getAdapter(typeToken).toPlain(src);
+  }
+
+  /**
+   * Deserializes a JSON string to a class instance.
+   *
+   * @param json - The JSON string to deserialize
+   * @param type - The constructor function of the target class
+   * @returns The instance of the target class
+   */
+  public fromJson<T>(json: string, type: Type<T>): T {
+    const plain: Plain = JSON.parse(json);
+    return this.fromPlain(plain, type);
+  }
+
+  /**
+   * Deserializes a JSON string (array) to an array of class instances.
+   *
+   * @param json - The JSON string to deserialize
+   * @param type - The constructor function of the target class
+   * @returns An array of instances of the target class
+   */
+  public fromJsonArray<T>(json: string, type: Type<T>): T[] {
+    const plain: Plain[] = JSON.parse(json);
+    return this.fromPlain(plain, type);
+  }
+
+  /**
+   * Serializes a class instance to its JSON string representation.
+   * This method also works with arrays.
+   *
+   * @param src - The class instance(s) to serialize
+   * @param type - The constructor function of the target class.
+   * If not specified, the type will be determined from the `src` parameter.
+   * @returns The JSON string
+   */
+  public toJson(src: unknown, type?: Type): string {
+    const plain = this.toPlain(src, type);
+    return JSON.stringify(plain);
   }
 
   /**

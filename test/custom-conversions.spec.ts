@@ -28,26 +28,26 @@ describe('Testing Tyson with different builder configurations', () => {
     };
 
     class PointAdapter extends TypeAdapter<Point> {
-      protected _fromJson(json: any): Point {
+      protected _fromPlain(json: any): Point {
         const point = new Point();
         point.lat = json[0];
         point.lon = json[1];
         return point;
       }
-      protected _toJson(src: Point) {
+      protected _toPlain(src: Point) {
         return [src.lat, src.lon];
       }
     }
 
     const tyson = new TysonBuilder().registerTypeAdapter(Point, new PointAdapter()).build();
 
-    const xcity = tyson.fromJson(json, City);
+    const xcity = tyson.fromPlain(json, City);
     expect(xcity).toBeInstanceOf(City);
     expect(xcity.point).toBeInstanceOf(Point);
     expect(xcity.point.lat).toBe(44.498955);
     expect(xcity.point.lon).toBe(11.327591);
 
-    const xjson = tyson.toJson(city);
+    const xjson = tyson.toPlain(city);
     expect(xjson).not.toBeInstanceOf(City);
     expect(xjson).toEqual({
       name: 'Bologna',
@@ -73,7 +73,7 @@ describe('Testing Tyson with different builder configurations', () => {
 
     const tyson = new TysonBuilder().enableNullsSerialization().build();
 
-    const xcity = tyson.toJson(city);
+    const xcity = tyson.toPlain(city);
     expect(xcity).not.toBeInstanceOf(City);
     expect(xcity).toEqual({
       name: 'Bologna',
